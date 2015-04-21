@@ -7,17 +7,17 @@ public class Peca {
 		ACTIVO, INATIVO
 	};
 
-	private Pos pos;
-	private char sigla;
-	private Estado estado;
+	protected Pos pos;
+	protected char sigla;
+	protected Estado estado;
 
-	Peca(int x, int y, char sigla) {
+	Peca(float x, float y, char sigla) {
 		pos = new Pos(x, y);
 		this.sigla = sigla;
 		estado=Estado.ACTIVO;
 	}
 
-	public void move(int x, int y) {
+	public void move(float x, float y) {
 		pos.setX(x);
 		pos.setY(y);
 	}
