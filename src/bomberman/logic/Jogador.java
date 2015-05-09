@@ -1,16 +1,22 @@
 package bomberman.logic;
 
-public class Jogador extends Peca{
-	public static enum EstadoJogador {MOVER,PARADO};
-	private float velocidade;
+public class Jogador extends Peca {
+	private static int nextId = 1;
+	private int id;
+
+	public static enum EstadoJogador {
+		MOVER, PARADO
+	};
+
+	private double velocidade = 0.4;
 	private int vidas;
-	private EstadoJogador estadoJogador ;
-	
-	public float getVelocidade() {
+	private EstadoJogador estadoJogador;
+
+	public double getVelocidade() {
 		return velocidade;
 	}
 
-	public void setVelocidade(float velocidade) {
+	public void setVelocidade(double velocidade) {
 		this.velocidade = velocidade;
 	}
 
@@ -32,7 +38,16 @@ public class Jogador extends Peca{
 
 	Jogador(float x, float y, char sigla) {
 		super(x, y, sigla);
-		// TODO Auto-generated constructor stub
+		id = nextId;
+		nextId++;
+		estadoJogador = EstadoJogador.PARADO;
 	}
-	
+
+	static int getNextId() {
+		return nextId;
+	}
+
+	int getId() {
+		return id;
+	}
 }

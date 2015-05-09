@@ -1,13 +1,40 @@
 package bomberman.logic;
 
+import java.util.ArrayList;
+
 import bomberman.logic.Builder.Difficulty;
 
 public class Bomberman {
+	private Mapa mapa;
+	private ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
+	private ArrayList<Bomba> bombas = new ArrayList<Bomba>();
+
+	public Mapa getMapa() {
+		return mapa;
+	}
+
+	public void setMapa(Mapa mapa) {
+		this.mapa = mapa;
+	}
+
+	public ArrayList<Jogador> getJogadores() {
+		return jogadores;
+	}
+
+	public ArrayList<Bomba> getBombas() {
+		return bombas;
+	}
 
 	public static void main(String[] args) {
 		Builder b = new Builder(Difficulty.EASY, 15);
-	//	System.out.println("teste");
-		imprimeMapa(b.createEasyMap(),15);
+		imprimeMapa(b.createEasyMap(), 15);
+	}
+
+	public Bomberman() {
+		mapa=new Mapa(15);
+		mapa.setTabuleiro(new Builder(Difficulty.EASY,15).createEasyMap());
+		
+		adicionarJogador();
 	}
 
 	public static void imprimeMapa(char[][] tab, int tamanho) {
@@ -19,5 +46,24 @@ public class Bomberman {
 
 			System.out.print("\n");
 		}
+	}
+
+	void adicionarJogador() {
+		Jogador j;
+
+		if (Jogador.getNextId() == 1) {
+			j = new Jogador(1, 1, '1');
+			jogadores.add(j);
+		} else if (Jogador.getNextId() == 1) {
+			j = new Jogador(mapa.getTamanho() - 1, mapa.getTamanho() - 1, '2');
+			jogadores.add(j);
+		} else if (Jogador.getNextId() == 1) {
+			j = new Jogador(1, mapa.getTamanho() - 1, '3');
+			jogadores.add(j);
+		} else if (Jogador.getNextId() == 1) {
+			j = new Jogador(mapa.getTamanho() - 1, 1, '4');
+			jogadores.add(j);
+		}
+
 	}
 }

@@ -1,12 +1,19 @@
 package bomberman.gui;
 
 import java.awt.EventQueue;
+import java.awt.FlowLayout;
 
 import javax.swing.JFrame;
+import javax.swing.JPanel;
+
+import bomberman.logic.Bomberman;
 
 public class Gui {
 
 	private JFrame frame;
+	private JPanel jogo;
+
+	private Bomberman bm = new Bomberman();
 
 	/**
 	 * Launch the application.
@@ -36,8 +43,17 @@ public class Gui {
 	 */
 	private void initialize() {
 		frame = new JFrame();
-		frame.setBounds(100, 100, 450, 300);
+		frame.setResizable(false);
+		frame.setBounds(100, 100, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());
+		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+
+		jogo = new PanelJogo(bm);
+
+		jogo.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());
+
+		frame.getContentPane().add(jogo);
+
 	}
 
 }
