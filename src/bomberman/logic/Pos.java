@@ -6,7 +6,7 @@ package bomberman.logic;
  *
  */
 public class Pos {
-	private float x, y;
+	private double x, y;
 
 	/**
 	 * Define uma coordenada cartesiana
@@ -16,7 +16,7 @@ public class Pos {
 	 * @param y
 	 *            Coordenada Vertical
 	 */
-	public Pos(float x, float y) {
+	public Pos(double x, double y) {
 		this.x = x;
 		this.y = y;
 	}
@@ -26,7 +26,7 @@ public class Pos {
 	 * 
 	 * @return Coordenada Horizontal
 	 */
-	public float getX() {
+	public double getX() {
 		return x;
 	}
 
@@ -36,7 +36,7 @@ public class Pos {
 	 * @param x
 	 *            Coordenada Horizontal
 	 */
-	public void setX(float x) {
+	public void setX(double x) {
 		this.x = x;
 	}
 
@@ -45,18 +45,18 @@ public class Pos {
 	 * 
 	 * @return Coordenada Vertical
 	 */
-	public float getY() {
+	public double getY() {
 		return y;
 	}
 
 	/**
 	 * Setter Coordenada Vertical
 	 * 
-	 * @param y
+	 * @param d
 	 *            Coordenada Vertical
 	 */
-	public void setY(float y) {
-		this.y = y;
+	public void setY(double d) {
+		this.y = d;
 	}
 
 }

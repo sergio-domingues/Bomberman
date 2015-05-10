@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Graphics;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -15,9 +17,10 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import bomberman.logic.Bomberman;
+import bomberman.logic.Jogador.Direcao;
 
 @SuppressWarnings("serial")
-public class PanelJogo extends JPanel {
+public class PanelJogo extends JPanel implements KeyListener{
 
 	public static final int TILESIZE = 50;
 	private Bomberman bm;
@@ -31,6 +34,8 @@ public class PanelJogo extends JPanel {
 		this.setLayout(new FlowLayout());
 		this.setVisible(true);
 		this.bm = bm;
+		this.addKeyListener(this);
+		
 		Bomberman.imprimeMapa(bm.getMapa().getTab(), bm.getMapa().getTamanho());
 	}
 
@@ -64,7 +69,7 @@ public class PanelJogo extends JPanel {
 		img = jogador;
 
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
-			g.drawImage(img, (int) bm.getJogadores().get(i).getPos().getX() * TILESIZE, (int) bm.getJogadores().get(i).getPos().getY() * TILESIZE,
+			g.drawImage(img, (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE), (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE),
 					TILESIZE, TILESIZE, null);
 		}
 
@@ -81,5 +86,33 @@ public class PanelJogo extends JPanel {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		
+		if(e.getKeyCode()==KeyEvent.VK_UP){
+			bm.getJogadores().get(0).move(Direcao.CIMA, bm.getMapa());
+		}else if(e.getKeyCode()==KeyEvent.VK_DOWN){
+			bm.getJogadores().get(0).move(Direcao.BAIXO, bm.getMapa());
+		}else if(e.getKeyCode()==KeyEvent.VK_RIGHT){
+			bm.getJogadores().get(0).move(Direcao.DIREITA, bm.getMapa());
+		}else if(e.getKeyCode()==KeyEvent.VK_LEFT){
+			bm.getJogadores().get(0).move(Direcao.ESQUERDA, bm.getMapa());
+		}
+		
+		this.repaint();
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

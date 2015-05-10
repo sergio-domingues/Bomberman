@@ -16,11 +16,6 @@ public class Peca {
 		this.sigla = sigla;
 		estado=Estado.ACTIVO;
 	}
-
-	public void move(float x, float y) {
-		pos.setX(x);
-		pos.setY(y);
-	}
 	
 	/**
 	 * Getter Sigla da Peca
