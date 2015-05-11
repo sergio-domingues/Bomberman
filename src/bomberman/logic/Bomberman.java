@@ -31,9 +31,9 @@ public class Bomberman {
 	}
 
 	public Bomberman() {
-		mapa=new Mapa(15);
-		mapa.setTabuleiro(new Builder(Difficulty.EASY,15).createEasyMap());
-		
+		mapa = new Mapa(15);
+		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
+
 		adicionarJogador();
 	}
 
@@ -66,6 +66,13 @@ public class Bomberman {
 		}
 
 	}
-	
-	
+
+	public void colocarBomba(Jogador j) {
+		if (j.getNrBombas() == 0) {
+			return;
+		} else {
+			this.bombas.add(j.armarBomba());
+		}
+	}
+
 }

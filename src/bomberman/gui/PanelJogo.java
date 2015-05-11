@@ -18,6 +18,7 @@ import javax.swing.Timer;
 
 import bomberman.logic.Bomberman;
 import bomberman.logic.Jogador.Direcao;
+import bomberman.logic.Jogador.EstadoJogador;
 
 @SuppressWarnings("serial")
 public class PanelJogo extends JPanel implements KeyListener{
@@ -25,7 +26,7 @@ public class PanelJogo extends JPanel implements KeyListener{
 	public static final int TILESIZE = 50;
 	private Bomberman bm;
 
-	private BufferedImage wall, fixedWall, floor, jogador;
+	private BufferedImage wall, fixedWall, floor, jogador,bomba;
 
 	public PanelJogo(Bomberman bm) {
 		setFocusable(true);
@@ -65,13 +66,17 @@ public class PanelJogo extends JPanel implements KeyListener{
 				g.drawImage(img, xi, yi, TILESIZE, TILESIZE, null);
 			}
 		}
-
-		img = jogador;
-
-		for (int i = 0; i < bm.getJogadores().size(); i++) {
-			g.drawImage(img, (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE), (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE),
+		
+		for (int i = 0; i < bm.getBombas().size(); i++) {
+			g.drawImage(bomba, (int) (bm.getBombas().get(i).getPos().getX() * TILESIZE), (int) (bm.getBombas().get(i).getPos().getY() * TILESIZE),
 					TILESIZE, TILESIZE, null);
 		}
+
+		for (int i = 0; i < bm.getJogadores().size(); i++) {
+			g.drawImage(jogador, (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE), (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE),
+					TILESIZE, TILESIZE, null);
+		}
+		
 
 	}
 
@@ -81,6 +86,7 @@ public class PanelJogo extends JPanel implements KeyListener{
 			fixedWall = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\FixedWall.png"));
 			floor = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Floor.png"));
 			jogador = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Jogador.png"));
+			bomba=ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Bomba.png"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -90,7 +96,7 @@ public class PanelJogo extends JPanel implements KeyListener{
 
 	@Override
 	public void keyPressed(KeyEvent e) {
-		
+		bm.getJogadores().get(0).setEstadoJogador(EstadoJogador.MOVER);
 		if(e.getKeyCode()==KeyEvent.VK_UP){
 			bm.getJogadores().get(0).move(Direcao.CIMA, bm.getMapa());
 		}else if(e.getKeyCode()==KeyEvent.VK_DOWN){
@@ -99,6 +105,8 @@ public class PanelJogo extends JPanel implements KeyListener{
 			bm.getJogadores().get(0).move(Direcao.DIREITA, bm.getMapa());
 		}else if(e.getKeyCode()==KeyEvent.VK_LEFT){
 			bm.getJogadores().get(0).move(Direcao.ESQUERDA, bm.getMapa());
+		}else if(e.getKeyCode()==KeyEvent.VK_SPACE){
+			bm.colocarBomba(bm.getJogadores().get(0));
 		}
 		
 		this.repaint();
@@ -106,7 +114,7 @@ public class PanelJogo extends JPanel implements KeyListener{
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		// TODO Auto-generated method stub
+		bm.getJogadores().get(0).setEstadoJogador(EstadoJogador.PARADO);
 		
 	}
 

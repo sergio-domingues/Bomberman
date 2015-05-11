@@ -6,7 +6,7 @@ public class Jogador extends Peca {
 	};
 
 	private Direcao ultimaDirecao;
-
+	private int nrBombas = 3;	//TODO Alterar pra valor desejado
 	private static int nextId = 1;
 	private int id;
 
@@ -17,6 +17,7 @@ public class Jogador extends Peca {
 	private double velocidade = 0.25;
 	private int vidas;
 	private EstadoJogador estadoJogador;
+	private int raioBomba = 3;
 
 	public double getVelocidade() {
 		return velocidade;
@@ -106,5 +107,23 @@ public class Jogador extends Peca {
 			}
 			this.ultimaDirecao = Direcao.DIREITA;
 		}
+	}
+
+	public void decBomba() {
+		nrBombas--;
+	}
+
+	public void adiBomba() {
+		nrBombas++;
+	}
+
+	public int getNrBombas() {
+		return nrBombas;
+	}
+
+	public Bomba armarBomba() {
+		Bomba temp = new Bomba(Math.round(this.pos.getX()), Math.round(this.pos.getY()), 'B', this.raioBomba, this);
+		this.nrBombas--;
+		return temp;
 	}
 }
