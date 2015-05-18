@@ -6,7 +6,7 @@ public class Jogador extends Peca {
 	};
 
 	private Direcao ultimaDirecao;
-	private int nrBombas = 3;	//TODO Alterar pra valor desejado
+	private int nrBombas = 3;	//TODO Alterar pra valor desejadoe
 	private static int nextId = 1;
 	private int id;
 

@@ -1,8 +1,10 @@
 package bomberman.logic;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import bomberman.logic.Builder.Difficulty;
+import bomberman.logic.Peca.Estado;
 
 public class Bomberman {
 	private Mapa mapa;
@@ -72,6 +74,17 @@ public class Bomberman {
 			return;
 		} else {
 			this.bombas.add(j.armarBomba());
+		}
+	}
+
+	public void updateBomba(double decremento) {
+		for (Iterator<Bomba> it = bombas.iterator(); it.hasNext();) {
+			Bomba b = it.next();
+			if (b.getEstado() == Estado.INATIVO) {
+				it.remove();
+			} else {
+				b.updateCronoBomba(decremento);
+			}
 		}
 	}
 

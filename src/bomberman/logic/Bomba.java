@@ -5,8 +5,8 @@ public class Bomba extends Peca {
 		ARMADA, EXPLODINDO
 	};
 
-	private static final double TEMPOARMADO = 2.0;
-	private static final double TEMPOEXPLOSAO = 0.5;
+	private static final double TEMPOARMADO = 2000;
+	private static final double TEMPOEXPLOSAO = 500;
 
 	private double cronoBomba;
 	private int raio;
@@ -19,6 +19,7 @@ public class Bomba extends Peca {
 		this.raio = raio;
 		this.jogador = j;
 		this.cronoBomba = TEMPOARMADO;
+		this.estadoBomba=EstadoBomba.ARMADA;
 	}
 
 	public double getCronoBomba() {
@@ -26,7 +27,19 @@ public class Bomba extends Peca {
 	}
 
 	public void updateCronoBomba(double decremento) {
-		cronoBomba -= decremento;
+		if(this.estadoBomba==EstadoBomba.ARMADA){
+			cronoBomba -= decremento;
+			if(cronoBomba<=0){
+				estadoBomba=EstadoBomba.EXPLODINDO;
+				cronoBomba=TEMPOEXPLOSAO;
+			}
+		}else if(this.estadoBomba==EstadoBomba.EXPLODINDO){
+			cronoBomba -= decremento;
+			if(cronoBomba<=0){
+				this.estado=Peca.Estado.INATIVO;
+			}
+		}
+		
 	}
 
 	public int getRaio() {
