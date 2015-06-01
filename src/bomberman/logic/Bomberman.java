@@ -78,14 +78,72 @@ public class Bomberman {
 	}
 
 	public void updateBomba(double decremento) {
+		boolean bombaExplodiu = false;
 		for (Iterator<Bomba> it = bombas.iterator(); it.hasNext();) {
 			Bomba b = it.next();
 			if (b.getEstado() == Estado.INATIVO) {
 				it.remove();
 			} else {
-				b.updateCronoBomba(decremento);
+				bombaExplodiu = b.updateCronoBomba(decremento);
+				if (bombaExplodiu) {
+					explodirBomba(b);
+				}
 			}
 		}
+
+	}
+
+	public void explodirBomba(Bomba b) {
+		// CIMA
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getY() - i < 0 || mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] = ' ';
+				break;
+			}
+		}
+
+		// BAIXO
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getY() + i >= mapa.getTamanho() || mapa.getTab()[(int) b.getPos().getY() + i][(int) b.getPos().getX()] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY() + i][(int) b.getPos().getX()] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY() + i][(int) b.getPos().getX()] = ' ';
+				break;
+			}
+		}
+
+		// ESQUERDA
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getX() - i < 0 || mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() - i] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() - i] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() - i] = ' ';
+				break;
+			}
+		}
+
+		// DIREITA
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getY() + i >= mapa.getTamanho() || mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() + i] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() + i] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() + i] = ' ';
+				break;
+			}
+		}
+
+		for (int i = 0; i < jogadores.size(); i++) {
+			if (jogadores.get(i).ver(b, mapa, b.getRaio())) {
+				System.out.println("matou");
+			}
+		}
+
 	}
 
 }

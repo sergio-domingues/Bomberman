@@ -6,7 +6,7 @@ public class Jogador extends Peca {
 	};
 
 	private Direcao ultimaDirecao;
-	private int nrBombas = 3;	//TODO Alterar pra valor desejadoe
+	private int nrBombas = 2; // TODO Alterar pra valor desejadoe
 	private static int nextId = 1;
 	private int id;
 
@@ -17,7 +17,7 @@ public class Jogador extends Peca {
 	private double velocidade = 0.25;
 	private int vidas;
 	private EstadoJogador estadoJogador;
-	private int raioBomba = 3;
+	private int raioBomba = 2;
 
 	public double getVelocidade() {
 		return velocidade;
@@ -70,7 +70,7 @@ public class Jogador extends Peca {
 		if (d == Direcao.CIMA) {
 			if (this.pos.getX() - Math.floor(this.pos.getX()) == 0) {
 				if ((int) (pos.getY() - velocidade) > 0) {
-					if (mapa.getTab()[(int) Math.ceil(pos.getY() - velocidade)][(int) pos.getX()] == ' ') {
+					if (mapa.getTab()[(int) Math.floor(pos.getY() - velocidade)][(int) pos.getX()] == ' ') {
 						this.pos.setY(pos.getY() - velocidade);
 					}
 				}
@@ -79,7 +79,7 @@ public class Jogador extends Peca {
 
 		} else if (d == Direcao.BAIXO) {
 			if (this.pos.getX() - Math.floor(this.pos.getX()) == 0) {
-				if ((int) (pos.getY() + velocidade) > 0) {
+				if ((int) (pos.getY() + velocidade) < mapa.getTamanho()) {
 					if (mapa.getTab()[(int) Math.ceil(pos.getY() + velocidade)][(int) pos.getX()] == ' ') {
 						this.pos.setY(pos.getY() + velocidade);
 					}
@@ -90,7 +90,7 @@ public class Jogador extends Peca {
 		} else if (d == Direcao.ESQUERDA) {
 			if (this.pos.getY() - Math.floor(this.pos.getY()) == 0) {
 				if ((int) (pos.getX() - velocidade) > 0) {
-					if (mapa.getTab()[(int) pos.getY()][(int) Math.ceil(pos.getX() - velocidade)] == ' ') {
+					if (mapa.getTab()[(int) pos.getY()][(int) Math.floor(pos.getX() - velocidade)] == ' ') {
 						this.pos.setX(pos.getX() - velocidade);
 					}
 				}
@@ -99,7 +99,7 @@ public class Jogador extends Peca {
 
 		} else if (d == Direcao.DIREITA) {
 			if (this.pos.getY() - Math.floor(this.pos.getY()) == 0) {
-				if ((int) (pos.getX() + velocidade) > 0) {
+				if ((int) (pos.getX() + velocidade) < mapa.getTamanho()) {
 					if (mapa.getTab()[(int) pos.getY()][(int) Math.ceil(pos.getX() + velocidade)] == ' ') {
 						this.pos.setX(pos.getX() + velocidade);
 					}
