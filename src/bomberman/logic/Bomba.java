@@ -19,27 +19,31 @@ public class Bomba extends Peca {
 		this.raio = raio;
 		this.jogador = j;
 		this.cronoBomba = TEMPOARMADO;
-		this.estadoBomba=EstadoBomba.ARMADA;
+		this.estadoBomba = EstadoBomba.ARMADA;
 	}
 
 	public double getCronoBomba() {
 		return cronoBomba;
 	}
 
-	public void updateCronoBomba(double decremento) {
-		if(this.estadoBomba==EstadoBomba.ARMADA){
+	public boolean updateCronoBomba(double decremento) {
+		if (this.estadoBomba == EstadoBomba.ARMADA) {
 			cronoBomba -= decremento;
-			if(cronoBomba<=0){
-				estadoBomba=EstadoBomba.EXPLODINDO;
-				cronoBomba=TEMPOEXPLOSAO;
+			if (cronoBomba <= 0) {
+				estadoBomba = EstadoBomba.EXPLODINDO;
+				cronoBomba = TEMPOEXPLOSAO;
+				return true;
 			}
-		}else if(this.estadoBomba==EstadoBomba.EXPLODINDO){
+		} else if (this.estadoBomba == EstadoBomba.EXPLODINDO) {
 			cronoBomba -= decremento;
-			if(cronoBomba<=0){
-				this.estado=Peca.Estado.INATIVO;
+			if (cronoBomba <= 0) {
+				this.estado = Peca.Estado.INATIVO;
+				jogador.adiBomba();
 			}
 		}
 		
+		return false;
+
 	}
 
 	public int getRaio() {

@@ -14,9 +14,9 @@ public class Peca {
 	Peca(float x, float y, char sigla) {
 		pos = new Pos(x, y);
 		this.sigla = sigla;
-		estado=Estado.ACTIVO;
+		estado = Estado.ACTIVO;
 	}
-	
+
 	/**
 	 * Getter Sigla da Peca
 	 * 
@@ -51,7 +51,7 @@ public class Peca {
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
-	
+
 	/**
 	 * Verifica se um Peca esta na mesma posicao de outra
 	 * 
@@ -65,5 +65,55 @@ public class Peca {
 		} else
 			return false;
 	}
-	
+
+	public boolean ver(Peca p, Mapa tab, double alcance) {
+
+		int pos;
+
+		if (Math.abs(p.getPos().getY() - this.getPos().getY()) < 1.0) { // Percorre
+																// Horizontal
+			// se alvo estiver mais perto que o alcance
+			if (Math.abs(this.getPos().getX() - p.getPos().getX()) < alcance) {
+				alcance = Math.abs(this.getPos().getX() - p.getPos().getX());
+			}
+
+			if (this.getPos().getX() < p.getPos().getX()) {
+				pos = +1; // frente
+			} else {
+				pos = -1; // tras
+			}
+
+			for (int i = 0; i <= Math.ceil(alcance); i++) {
+				if (tab.getTab()[(int) this.getPos().getY()][(int) this.getPos().getX() + (i * pos)] == 'X') {
+					return false;
+				} else if ((int) p.getPos().getX() == ((int) this.getPos().getX() + (pos * i))) {
+					return true;
+				}
+			}
+
+		} else if (Math.abs(p.getPos().getX() - this.getPos().getX()) < 1.0) { // Percorre
+																		// Verticalmente
+
+			if (Math.abs(this.getPos().getY() - p.getPos().getY()) < alcance) {
+				alcance = Math.abs(this.getPos().getY() - p.getPos().getY());
+			}
+
+			if (this.getPos().getY() < p.getPos().getY()) {
+				pos = +1; // baixo
+			} else {
+				pos = -1; // cima
+			}
+
+			for (int i = 0; i <= Math.ceil(alcance); i++) {
+				if (tab.getTab()[(int) this.getPos().getY() + (i * pos)][(int) this.getPos().getX()] == 'X') {
+					return false;
+				} else if ((int) p.getPos().getY() == ((int) this.getPos().getY() + (i * pos))) {
+					return true;
+				}
+			}
+		}
+
+		return false;
+	}
+
 }

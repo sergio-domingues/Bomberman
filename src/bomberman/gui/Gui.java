@@ -53,7 +53,6 @@ public class Gui {
 		jogo.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());
 
 		frame.getContentPane().add(jogo);
-
 	}
 
 }

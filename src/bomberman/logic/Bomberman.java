@@ -37,6 +37,7 @@ public class Bomberman {
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
 
 		adicionarJogador();
+		adicionarJogador();
 	}
 
 	public static void imprimeMapa(char[][] tab, int tamanho) {
@@ -60,13 +61,13 @@ public class Bomberman {
 			j = new Jogador(1, 1, '1');
 			jogadores.add(j);
 		} else if (Jogador.getNextId() == 2) {
-			j = new Jogador(mapa.getTamanho() - 1, mapa.getTamanho() - 1, '2');
+			j = new Jogador(mapa.getTamanho() - 2, mapa.getTamanho() - 2, '2');
 			jogadores.add(j);
 		} else if (Jogador.getNextId() == 3) {
-			j = new Jogador(1, mapa.getTamanho() - 1, '3');
+			j = new Jogador(1, mapa.getTamanho() - 2, '3');
 			jogadores.add(j);
 		} else if (Jogador.getNextId() == 4) {
-			j = new Jogador(mapa.getTamanho() - 1, 1, '4');
+			j = new Jogador(mapa.getTamanho() - 2, 1, '4');
 			jogadores.add(j);
 		}
 	}
@@ -80,14 +81,81 @@ public class Bomberman {
 	}
 
 	public void updateBomba(double decremento) {
+		boolean bombaExplodiu = false;
 		for (Iterator<Bomba> it = bombas.iterator(); it.hasNext();) {
 			Bomba b = it.next();
 			if (b.getEstado() == Estado.INATIVO) {
 				it.remove();
 			} else {
-				b.updateCronoBomba(decremento);
+				bombaExplodiu = b.updateCronoBomba(decremento);
+				if (bombaExplodiu) {
+					explodirBomba(b);
+				}
 			}
 		}
+
+	}
+
+	public void explodirBomba(Bomba b) {
+		// CIMA
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getY() - i < 0 || mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] = ' ';
+				break;
+			}
+		}
+
+		// BAIXO
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getY() + i >= mapa.getTamanho() || mapa.getTab()[(int) b.getPos().getY() + i][(int) b.getPos().getX()] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY() + i][(int) b.getPos().getX()] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY() + i][(int) b.getPos().getX()] = ' ';
+				break;
+			}
+		}
+
+		// ESQUERDA
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getX() - i < 0 || mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() - i] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() - i] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() - i] = ' ';
+				break;
+			}
+		}
+
+		// DIREITA
+		for (int i = 0; i <= b.getRaio(); i++) {
+			if ((int) b.getPos().getY() + i >= mapa.getTamanho() || mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() + i] == 'X') {
+				break;
+			}
+			if (mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() + i] == 'W') {
+				mapa.getTab()[(int) b.getPos().getY()][(int) b.getPos().getX() + i] = ' ';
+				break;
+			}
+		}
+
+		for (int i = 0; i < jogadores.size(); i++) { //verifica colisoes com a bomba
+			if(jogadores.get(i).getEstado() != Peca.Estado.ACTIVO)
+				continue;
+			
+			if (jogadores.get(i).ver(b, mapa, b.getRaio())) {
+				
+				jogadores.get(i).decVidas();
+				System.out.println(jogadores.get(i).getVidas());
+				
+				if(jogadores.get(i).getVidas() == 0){
+					jogadores.get(i).setEstado(Peca.Estado.INATIVO);
+				}				
+			}
+		}
+
 	}
 
 }
