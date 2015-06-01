@@ -53,20 +53,22 @@ public class Bomberman {
 	void adicionarJogador() {
 		Jogador j;
 
+		if (Jogador.getNextId() > 4)
+			return;
+
 		if (Jogador.getNextId() == 1) {
 			j = new Jogador(1, 1, '1');
 			jogadores.add(j);
-		} else if (Jogador.getNextId() == 1) {
+		} else if (Jogador.getNextId() == 2) {
 			j = new Jogador(mapa.getTamanho() - 1, mapa.getTamanho() - 1, '2');
 			jogadores.add(j);
-		} else if (Jogador.getNextId() == 1) {
+		} else if (Jogador.getNextId() == 3) {
 			j = new Jogador(1, mapa.getTamanho() - 1, '3');
 			jogadores.add(j);
-		} else if (Jogador.getNextId() == 1) {
+		} else if (Jogador.getNextId() == 4) {
 			j = new Jogador(mapa.getTamanho() - 1, 1, '4');
 			jogadores.add(j);
 		}
-
 	}
 
 	public void colocarBomba(Jogador j) {

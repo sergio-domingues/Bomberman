@@ -6,7 +6,7 @@ public class Jogador extends Peca {
 	};
 
 	private Direcao ultimaDirecao;
-	private int nrBombas = 3;	//TODO Alterar pra valor desejadoe
+	private int nrBombas = 3;	//TODO Alterar pra valor desejado (infinito), alterar valor maximo de bombas ao mesmo tempo
 	private static int nextId = 1;
 	private int id;
 
