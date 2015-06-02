@@ -6,7 +6,7 @@ public class Bomba extends Peca {
 	};
 
 	private static final double TEMPOARMADO = 2000;
-	private static final double TEMPOEXPLOSAO = 500;
+	private static final double TEMPOEXPLOSAO = 800;
 
 	private double cronoBomba;
 	private int raio;

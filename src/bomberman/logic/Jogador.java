@@ -17,8 +17,10 @@ public class Jogador extends Peca {
 		MOVER, PARADO
 	};
 
-	private double velocidade = 0.5;
-	private int vidas= 2;
+	private double velocidade = 0.1; // apenas sao possiveis valores cujo seu
+										// somatorio dê origem ao valor
+										// 1(exacto)
+	private int vidas = 2;
 	private EstadoJogador estadoJogador;
 	private int raioBomba = 2;
 	private ArrayList<PowerUp> powerUps;
@@ -71,44 +73,80 @@ public class Jogador extends Peca {
 	}
 
 	public void move(Direcao d, Mapa mapa) {
+
+		double x, y, deltax, deltay,deltay_ceil;
+
+		// arredondamento correctivo : 2.99999 -> 3.0 | 2.00003 = 2.0
+		x = Math.round(this.pos.getX() * 100.0) / 100.0;
+		y = Math.round(this.pos.getY() * 100.0) / 100.0;
+		deltax = x - Math.floor(x);
+		deltay = y - Math.floor(y);
+		deltay_ceil = Math.ceil(y) - y;
+		
+		//TODO RESOLVER MOVIMENTO BUG 
+		
+		System.out.println("x,y:");
+		System.out.println(x);
+		System.out.println(y);
+		System.out.println("dx,dy:");
+		System.out.println(deltax);
+		System.out.println(deltay);
+				
+
 		if (d == Direcao.CIMA) {
-			if (this.pos.getX() - Math.floor(this.pos.getX()) == 0) {
-				if ((int) (pos.getY() - velocidade) > 0) {
-					if (mapa.getTab()[(int) Math.floor(pos.getY() - velocidade)][(int) pos.getX()] == ' ') {
-						this.pos.setY(pos.getY() - velocidade);
+			if (deltax == 0) { // coincide com inicio da celula
+				if ((int) (y - velocidade) > 0) {
+					if (mapa.getTab()[(int) Math.floor(y - velocidade)][(int) x] == ' ') {
+						this.pos.setY(y - velocidade);
 					}
 				}
-			}
+			} else if (deltax < 0.5 && deltax > 0.0) // + fluidez movimento
+				this.move(Direcao.ESQUERDA, mapa);
+			else if (deltax > 0.5 && deltax < 1.0)
+				this.move(Direcao.DIREITA, mapa);
+
 			this.ultimaDirecao = Direcao.CIMA;
 
 		} else if (d == Direcao.BAIXO) {
-			if (this.pos.getX() - Math.floor(this.pos.getX()) == 0) {
-				if ((int) (pos.getY() + velocidade) < mapa.getTamanho()) {
-					if (mapa.getTab()[(int) Math.ceil(pos.getY() + velocidade)][(int) pos.getX()] == ' ') {
-						this.pos.setY(pos.getY() + velocidade);
+			if (deltax == 0) {
+				if ((int) (y + velocidade) < mapa.getTamanho()) {
+					if (mapa.getTab()[(int) Math.ceil(y + velocidade)][(int) x] == ' ') {
+						this.pos.setY(y + velocidade);
 					}
 				}
-			}
+			} else if (deltax < 0.5 && deltax > 0.0)
+				this.move(Direcao.ESQUERDA, mapa);
+			else if (deltax > 0.5 && deltax < 1.0)
+				this.move(Direcao.DIREITA, mapa);
+
 			this.ultimaDirecao = Direcao.BAIXO;
 
 		} else if (d == Direcao.ESQUERDA) {
-			if (this.pos.getY() - Math.floor(this.pos.getY()) == 0) {
-				if ((int) (pos.getX() - velocidade) > 0) {
-					if (mapa.getTab()[(int) pos.getY()][(int) Math.floor(pos.getX() - velocidade)] == ' ') {
-						this.pos.setX(pos.getX() - velocidade);
+			if (deltay == 0) {
+				if ((int) (x - velocidade) > 0) {
+					if (mapa.getTab()[(int) y][(int) Math.floor(x - velocidade)] == ' ') {
+						this.pos.setX(x - velocidade);
 					}
 				}
-			}
+			} else if (deltay < 0.5 && deltay > 0.0)
+				this.move(Direcao.BAIXO, mapa);
+			else if (deltay > 0.5 && deltay < 1.0)
+				this.move(Direcao.CIMA, mapa);
+
 			this.ultimaDirecao = Direcao.ESQUERDA;
 
 		} else if (d == Direcao.DIREITA) {
-			if (this.pos.getY() - Math.floor(this.pos.getY()) == 0) {
-				if ((int) (pos.getX() + velocidade) < mapa.getTamanho()) {
-					if (mapa.getTab()[(int) pos.getY()][(int) Math.ceil(pos.getX() + velocidade)] == ' ') {
-						this.pos.setX(pos.getX() + velocidade);
+			if (deltay == 0) {
+				if ((int) (x + velocidade) < mapa.getTamanho()) {
+					if (mapa.getTab()[(int) y][(int) Math.ceil(x + velocidade)] == ' ') {
+						this.pos.setX(x + velocidade);
 					}
 				}
-			}
+			} else if (deltay_ceil > 0.0 && deltay_ceil < 0.5)
+				this.move(Direcao.BAIXO, mapa);
+			else if (deltay_ceil > 0.5 && deltay_ceil < 1.0)
+				this.move(Direcao.CIMA, mapa);
+
 			this.ultimaDirecao = Direcao.DIREITA;
 		}
 	}
@@ -121,14 +159,14 @@ public class Jogador extends Peca {
 		nrBombas++;
 	}
 
-	public void decVidas(){
+	public void decVidas() {
 		vidas--;
 	}
-	
-	public void addVidas(){
+
+	public void addVidas() {
 		vidas++;
 	}
-	
+
 	public int getNrBombas() {
 		return nrBombas;
 	}

@@ -74,6 +74,14 @@ public class PanelJogo extends JPanel implements KeyListener {
 				g.drawImage(img, xi, yi, TILESIZE, TILESIZE, null);
 			}
 		}
+		
+		for (int i = 0; i < bm.getBombas().size(); i++) {
+		
+			if(bm.getBombas().get(i).getEstadoBomba() != EstadoBomba.EXPLODINDO) {
+				g.drawImage(bomba, (int) (bm.getBombas().get(i).getPos().getX() * TILESIZE),
+						(int) (bm.getBombas().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
+			}
+		}
 
 		// impressao jogador
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
@@ -139,10 +147,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 					} else
 						ignore[3] = 1;
 				}
-			} else {
-				g.drawImage(bomba, (int) (bm.getBombas().get(i).getPos().getX() * TILESIZE),
-						(int) (bm.getBombas().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
-			}
+			} 
 		}
 
 	}
