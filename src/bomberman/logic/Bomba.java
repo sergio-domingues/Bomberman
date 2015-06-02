@@ -40,10 +40,8 @@ public class Bomba extends Peca {
 				this.estado = Peca.Estado.INATIVO;
 				jogador.adiBomba();
 			}
-		}
-		
+		}		
 		return false;
-
 	}
 
 	public int getRaio() {

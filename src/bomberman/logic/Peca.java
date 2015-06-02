@@ -70,8 +70,8 @@ public class Peca {
 
 		int pos;
 
-		if (Math.abs(p.getPos().getY() - this.getPos().getY()) < 1.0) { // Percorre
-																// Horizontal
+		// Percorre Horizontal
+		if (Math.abs(p.getPos().getY() - this.getPos().getY()) < 1.0) {
 			// se alvo estiver mais perto que o alcance
 			if (Math.abs(this.getPos().getX() - p.getPos().getX()) < alcance) {
 				alcance = Math.abs(this.getPos().getX() - p.getPos().getX());
@@ -84,15 +84,22 @@ public class Peca {
 			}
 
 			for (int i = 0; i <= Math.ceil(alcance); i++) {
+
 				if (tab.getTab()[(int) this.getPos().getY()][(int) this.getPos().getX() + (i * pos)] == 'X') {
 					return false;
-				} else if ((int) p.getPos().getX() == ((int) this.getPos().getX() + (pos * i))) {
-					return true;
+				} else if (pos < 0) {
+					if ((int) Math.floor(p.getPos().getX()) == ((int) Math.floor(this.getPos().getX() + (pos * i)))) {
+						return true;
+					}
+				} else if (pos > 0) {
+					if ((int) Math.ceil(p.getPos().getX()) == ((int) Math.ceil(this.getPos().getX() + (pos * i)))) {
+						return true;
+					}
 				}
 			}
 
-		} else if (Math.abs(p.getPos().getX() - this.getPos().getX()) < 1.0) { // Percorre
-																		// Verticalmente
+			// Percorre Verticalmente
+		} else if (Math.abs(p.getPos().getX() - this.getPos().getX()) < 1.0) {
 
 			if (Math.abs(this.getPos().getY() - p.getPos().getY()) < alcance) {
 				alcance = Math.abs(this.getPos().getY() - p.getPos().getY());
@@ -107,8 +114,14 @@ public class Peca {
 			for (int i = 0; i <= Math.ceil(alcance); i++) {
 				if (tab.getTab()[(int) this.getPos().getY() + (i * pos)][(int) this.getPos().getX()] == 'X') {
 					return false;
-				} else if ((int) p.getPos().getY() == ((int) this.getPos().getY() + (i * pos))) {
-					return true;
+				} else if (pos > 0) {
+					if ((int) Math.ceil(p.getPos().getY()) == ((int) Math.ceil(this.getPos().getY() + (i * pos)))) {
+						return true;
+					}
+				} else if (pos < 0) {
+					if ((int) Math.floor(p.getPos().getY()) == ((int) Math.floor(this.getPos().getY() + (i * pos)))) {
+						return true;
+					}
 				}
 			}
 		}

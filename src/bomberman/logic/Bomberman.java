@@ -141,21 +141,56 @@ public class Bomberman {
 			}
 		}
 
-		for (int i = 0; i < jogadores.size(); i++) { //verifica colisoes com a bomba
-			if(jogadores.get(i).getEstado() != Peca.Estado.ACTIVO)
+		// verifica colisoes com a bomba
+		for (int i = 0; i < jogadores.size(); i++) {
+			if (jogadores.get(i).getEstado() != Peca.Estado.ACTIVO)
 				continue;
-			
+
 			if (jogadores.get(i).ver(b, mapa, b.getRaio())) {
-				
+
 				jogadores.get(i).decVidas();
+				jogadores.get(i).setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
+
 				System.out.println(jogadores.get(i).getVidas());
-				
-				if(jogadores.get(i).getVidas() == 0){
+
+				if (jogadores.get(i).getVidas() == 0) {
 					jogadores.get(i).setEstado(Peca.Estado.INATIVO);
-				}				
+				}
 			}
 		}
-
 	}
 
+	public void verificaJogador(int dec) {
+
+		for (int i = 0; i < this.jogadores.size(); i++) {
+
+			if (this.jogadores.get(i).getEstado() == Peca.Estado.INATIVO)
+				continue;
+
+			if (this.jogadores.get(i).getEstadoVuln() == Jogador.EstadoVulnerabilidade.VULNERAVEL) {
+
+				for (int j = 0; j < this.bombas.size(); j++) {
+
+					if (this.bombas.get(j).getEstadoBomba() != Bomba.EstadoBomba.EXPLODINDO)
+						continue;
+
+					if (this.jogadores.get(i).ver(this.bombas.get(j), this.mapa, this.bombas.get(j).getRaio())) {
+
+						System.out.println(this.jogadores.get(i).getEstadoVuln());
+
+						this.jogadores.get(i).decVidas();
+						this.jogadores.get(i).setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
+
+						if (this.jogadores.get(i).getVidas() == 0) {
+							System.out.println("morreu");
+							jogadores.get(i).setEstado(Peca.Estado.INATIVO);
+						}
+					}
+				}
+			}
+
+			else
+				this.jogadores.get(i).updateTempoJogador(dec);
+		}
+	}
 }

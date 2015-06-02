@@ -8,7 +8,7 @@ public class Jogador extends Peca {
 	};
 
 	private Direcao ultimaDirecao;
-	private int nrBombas = 2; // TODO Alterar pra valor desejadoe
+	private int nrBombas = 2; // TODO Alterar pra valor desejado
 
 	private static int nextId = 1;
 	private int id;
@@ -16,15 +16,30 @@ public class Jogador extends Peca {
 	public static enum EstadoJogador {
 		MOVER, PARADO
 	};
+	
+	public static enum EstadoVulnerabilidade{
+		INVULNERAVEL, VULNERAVEL
+	};
 
-	private double velocidade = 0.1; // apenas sao possiveis valores cujo seu
-										// somatorio dê origem ao valor
-										// 1(exacto)
+	// apenas sao possiveis valores cujo seu somatorio dê origem ao valor 1(exacto)
+	private double velocidade = 0.2; 
 	private int vidas = 2;
+	private int tempo_invulneravel = 1500;
 	private EstadoJogador estadoJogador;
+	private EstadoVulnerabilidade estadoVuln;
+	
 	private int raioBomba = 2;
 	private ArrayList<PowerUp> powerUps;
 
+//=======================================================
+	public EstadoVulnerabilidade getEstadoVuln() {
+		return estadoVuln;
+	}
+
+	public void setEstadoVuln(EstadoVulnerabilidade estadoVuln) {
+		this.estadoVuln = estadoVuln;
+	}
+	
 	public double getVelocidade() {
 		return velocidade;
 	}
@@ -62,7 +77,39 @@ public class Jogador extends Peca {
 		id = nextId;
 		nextId++;
 		estadoJogador = EstadoJogador.PARADO;
+		estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
 	}
+	
+	public void updateTempoJogador(int decremento){
+		
+		this.tempo_invulneravel -= decremento;
+		
+		if(this.tempo_invulneravel <= 0){
+			this.tempo_invulneravel = 1500;
+			this.estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
+			System.out.println("renova tempo");
+		}		
+	}
+	
+	public void updateVelocidade(){	
+		
+		if( this.velocidade < 0.25 ){
+			this.velocidade = 0.25;		
+		}
+		else if(this.velocidade < 0.50){
+			this.velocidade = 0.50;
+		}
+		else if (this.velocidade < 1){
+			this.velocidade = 1;
+		}
+	}
+	
+	public void updateRangeBomba(int tamanho_mapa){
+		
+		if(this.raioBomba + 1 < tamanho_mapa - 2)
+			this.raioBomba++;		
+	}
+	
 
 	static int getNextId() {
 		return nextId;
@@ -74,7 +121,7 @@ public class Jogador extends Peca {
 
 	public void move(Direcao d, Mapa mapa) {
 
-		double x, y, deltax, deltay,deltay_ceil;
+		double x, y, deltax, deltay, deltay_ceil;
 
 		// arredondamento correctivo : 2.99999 -> 3.0 | 2.00003 = 2.0
 		x = Math.round(this.pos.getX() * 100.0) / 100.0;
@@ -82,16 +129,13 @@ public class Jogador extends Peca {
 		deltax = x - Math.floor(x);
 		deltay = y - Math.floor(y);
 		deltay_ceil = Math.ceil(y) - y;
-		
-		//TODO RESOLVER MOVIMENTO BUG 
-		
-		System.out.println("x,y:");
-		System.out.println(x);
-		System.out.println(y);
-		System.out.println("dx,dy:");
-		System.out.println(deltax);
-		System.out.println(deltay);
-				
+//
+//		System.out.println("x,y:");
+//		System.out.println(x);
+//		System.out.println(y);
+//		System.out.println("dx,dy:");
+//		System.out.println(deltax);
+//		System.out.println(deltay);
 
 		if (d == Direcao.CIMA) {
 			if (deltax == 0) { // coincide com inicio da celula
@@ -100,9 +144,9 @@ public class Jogador extends Peca {
 						this.pos.setY(y - velocidade);
 					}
 				}
-			} else if (deltax < 0.5 && deltax > 0.0) // + fluidez movimento
+			} else if (deltax < 0.5 && deltax > 0.0 && mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ')
 				this.move(Direcao.ESQUERDA, mapa);
-			else if (deltax > 0.5 && deltax < 1.0)
+			else if (deltax > 0.5 && deltax < 1.0 && mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ')
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.CIMA;
@@ -114,9 +158,9 @@ public class Jogador extends Peca {
 						this.pos.setY(y + velocidade);
 					}
 				}
-			} else if (deltax < 0.5 && deltax > 0.0)
+			} else if (deltax < 0.5 && deltax > 0.0 && mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == ' ')
 				this.move(Direcao.ESQUERDA, mapa);
-			else if (deltax > 0.5 && deltax < 1.0)
+			else if (deltax > 0.5 && deltax < 1.0 && mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' ')
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.BAIXO;
@@ -128,10 +172,10 @@ public class Jogador extends Peca {
 						this.pos.setX(x - velocidade);
 					}
 				}
-			} else if (deltay < 0.5 && deltay > 0.0)
-				this.move(Direcao.BAIXO, mapa);
-			else if (deltay > 0.5 && deltay < 1.0)
+			} else if (deltay > 0.0 && deltay < 0.5 && mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' ')
 				this.move(Direcao.CIMA, mapa);
+			else if (deltay > 0.5 && deltay < 1.0 && mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' ')
+				this.move(Direcao.BAIXO, mapa);
 
 			this.ultimaDirecao = Direcao.ESQUERDA;
 
@@ -142,9 +186,9 @@ public class Jogador extends Peca {
 						this.pos.setX(x + velocidade);
 					}
 				}
-			} else if (deltay_ceil > 0.0 && deltay_ceil < 0.5)
+			} else if (deltay_ceil > 0.0 && deltay_ceil < 0.5 && mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' ')
 				this.move(Direcao.BAIXO, mapa);
-			else if (deltay_ceil > 0.5 && deltay_ceil < 1.0)
+			else if (deltay_ceil > 0.5 && deltay_ceil < 1.0 && mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' ')
 				this.move(Direcao.CIMA, mapa);
 
 			this.ultimaDirecao = Direcao.DIREITA;
@@ -183,5 +227,13 @@ public class Jogador extends Peca {
 
 	public void setPowerUps(ArrayList<PowerUp> powerUps) {
 		this.powerUps = powerUps;
+	}
+
+	public int getTempo_invulneravel() {
+		return tempo_invulneravel;
+	}
+
+	public void setTempo_invulneravel(int tempo_invulneravel) {
+		this.tempo_invulneravel = tempo_invulneravel;
 	}
 }
