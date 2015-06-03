@@ -186,9 +186,9 @@ public class Bomberman {
 			}
 		}
 
-		if(flag == 2)
+		if (flag == 2)
 			return;
-		
+
 		// verifica colisoes com a bomba
 		for (int i = 0; i < jogadores.size(); i++) {
 			if (jogadores.get(i).getEstado() != Peca.Estado.ACTIVO)
@@ -242,9 +242,9 @@ public class Bomberman {
 
 				for (int j = 0; j < this.bombas.size(); j++) {
 
-					if(this.bombas.get(j).getEstado() != Peca.Estado.ACTIVO)
+					if (this.bombas.get(j).getEstado() != Peca.Estado.ACTIVO)
 						continue;
-					
+
 					if (this.bombas.get(j).getEstadoBomba() != Bomba.EstadoBomba.EXPLODINDO)
 						continue;
 
@@ -268,7 +268,6 @@ public class Bomberman {
 		}
 	}
 
-	// TODO na chamda desta funcaoverificar se o retorno n é nulo
 	public PowerUp geraPowerUp(double x, double y) {
 
 		Random gerador = new Random();
