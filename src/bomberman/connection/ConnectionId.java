@@ -8,44 +8,74 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 
 public class ConnectionId extends Thread {
 	public static int nextId = 1;
 	protected Socket clientSocket = null;
 	private int id;
-	boolean isConnected = true;
-	InputStream input;
-	OutputStream output;
-	private Date lastConn;
-	private String lastMessage;
+	private boolean isConnected = false;
+
+	private PrintWriter out;
+	private BufferedReader in;
+
+	private String lastMessage, ip;
 
 	ConnectionId(Socket clientSocket) {
 		id = nextId;
-		lastConn = new Date();
+		try {
+
+			clientSocket.setSoTimeout(10000);
+
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.clientSocket = clientSocket;
+		ip = clientSocket.getInetAddress().getHostAddress();
 		nextId++;
+	}
+
+	public String getIp() {
+		return ip;
 	}
 
 	public int getIdConnection() {
 		return id;
 	}
 
-	public void updateLastConn() {
-		lastConn = new Date();
-	}
-
 	public void run() {
-		while (isConnected) {
+		while (!isConnected) {
 
 			try {
-				PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				String received = in.readLine();
+				System.out.println(received);
+				
+				if (received.equals("ligar")) {
+					out.println("ACK");
+					out.flush();
+					
+				}
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
 
+		while (isConnected) {
+			try {
 				lastMessage = in.readLine();
 				System.out.println(id + ": " + lastMessage);
+
+			} catch (SocketTimeoutException e) {
+				System.err.println("Socket Desconectada");
+				// this.closeConnection();
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
@@ -53,15 +83,19 @@ public class ConnectionId extends Thread {
 
 	public void closeConnection() {
 		try {
-			output.close();
-			input.close();
+			isConnected = false;
+			this.clientSocket.close();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-
 	}
 
 	public String getLastMessage() {
 		return lastMessage;
 	}
+
+	public boolean isConnected() {
+		return isConnected;
+	}
+
 }
