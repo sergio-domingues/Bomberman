@@ -37,7 +37,7 @@ public class Connection extends Thread {
 
 		while (status == ServerStatus.GETTINGCLIENT) {
 			Socket clientSocket = null;
-			if (ConnectionId.nextId < 4) {
+			if (ConnectionId.nextId <=5) {
 				try {
 					clientSocket = this.serverSocket.accept();
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
@@ -48,7 +48,7 @@ public class Connection extends Thread {
 					System.err.println("Erro Criar Cliente");
 					e.printStackTrace();
 				}
-			} else if (ConnectionId.nextId > 4) {
+			} else if (ConnectionId.nextId >5) {
 				System.err.println("Maximo de CLientes Atingido");
 			}
 

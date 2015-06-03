@@ -60,7 +60,7 @@ public class ConnectionId extends Thread {
 				if (received.equals("ligar")) {
 					out.println("ACK");
 					out.flush();
-					
+					isConnected=true;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
