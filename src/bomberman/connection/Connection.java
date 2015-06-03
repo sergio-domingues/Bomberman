@@ -10,7 +10,8 @@ import java.net.UnknownHostException;
 
 public class Connection extends Thread {
 	protected ServerSocket serverSocket;
-	protected ConnectionId connections[] = new ConnectionId[4];
+	protected ConnectionId connections[];
+	protected int maxConnection;
 
 	public enum ServerStatus {
 		GETTINGCLIENT, RUNNING, STOPPED
@@ -20,7 +21,12 @@ public class Connection extends Thread {
 	protected boolean isRunning = true;
 	public final static int PORT = 4445;
 
-	public Connection() {
+	public Connection(int maxConnection) {
+
+		connections = new ConnectionId[maxConnection];
+
+		this.maxConnection = maxConnection;
+
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
@@ -37,7 +43,7 @@ public class Connection extends Thread {
 
 		while (status == ServerStatus.GETTINGCLIENT) {
 			Socket clientSocket = null;
-			if (ConnectionId.nextId <=5) {
+			if (ConnectionId.nextId <= maxConnection) {
 				try {
 					clientSocket = this.serverSocket.accept();
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
@@ -48,14 +54,14 @@ public class Connection extends Thread {
 					System.err.println("Erro Criar Cliente");
 					e.printStackTrace();
 				}
-			} else if (ConnectionId.nextId >5) {
+			} else if (ConnectionId.nextId > maxConnection + 1) {
 				System.err.println("Maximo de CLientes Atingido");
 			}
 
 		}
 
 		while (status == ServerStatus.RUNNING) {
-			for (int i = 0; i < 4; i++) {
+			for (int i = 0; i < maxConnection; i++) {
 				if (!connections[i].isConnected()) {
 					connections[i] = null;
 				}
@@ -66,7 +72,7 @@ public class Connection extends Thread {
 	}
 
 	private boolean existsConnect(String ip) {
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < maxConnection; i++) {
 			if (connections[i] != null && connections[i].getIp() == ip) {
 				return true;
 			}
@@ -84,7 +90,7 @@ public class Connection extends Thread {
 	}
 
 	public static void main(String[] arg) {
-		new Connection().start();
+		new Connection(2).start();
 
 	}
 
