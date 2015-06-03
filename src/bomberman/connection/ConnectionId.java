@@ -83,6 +83,7 @@ public class ConnectionId extends Thread {
 			lastMessage = in.readLine();
 		} catch (SocketTimeoutException e) {
 			System.err.println("Socket Desconectada");
+			closeConnection();
 		} catch (IOException e) {
 			System.err.println("Erro a ler da Socket");
 			e.printStackTrace();

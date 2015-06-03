@@ -67,13 +67,13 @@ public class Connection extends Thread {
 				}
 			}
 		}
-		System.out.println("Server Stopped.");
+		System.err.println("Server Stopped.");
 
 	}
 
 	private boolean existsConnect(String ip) {
 		for (int i = 0; i < maxConnection; i++) {
-			if (connections[i] != null && connections[i].getIp() == ip) {
+			if (connections[i] != null && connections[i].getIp().equals(ip)) {
 				return true;
 			}
 		}
