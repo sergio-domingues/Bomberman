@@ -56,11 +56,11 @@ public class ConnectionId extends Thread {
 			try {
 				String received = in.readLine();
 				System.out.println(received);
-				
+
 				if (received.equals("ligar")) {
 					out.println("ACK");
 					out.flush();
-					isConnected=true;
+					isConnected = true;
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -68,16 +68,7 @@ public class ConnectionId extends Thread {
 		}
 
 		while (isConnected) {
-			try {
-				lastMessage = in.readLine();
-				System.out.println(id + ": " + lastMessage);
-
-			} catch (SocketTimeoutException e) {
-				System.err.println("Socket Desconectada");
-				// this.closeConnection();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+			readMessage();
 		}
 	}
 
@@ -85,9 +76,28 @@ public class ConnectionId extends Thread {
 		try {
 			isConnected = false;
 			this.clientSocket.close();
+			nextId--;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	String readMessage() {
+		try {
+			lastMessage = in.readLine();
+		} catch (SocketTimeoutException e) {
+			System.err.println("Socket Desconectada");
+		} catch (IOException e) {
+			System.err.println("Erro a ler da Socket");
+			e.printStackTrace();
+		}
+
+		if (lastMessage == null) {
+			System.err.println("Cliente Desconectado");
+			closeConnection();
+		} else
+			System.out.println(id + ": " + lastMessage);
+		return lastMessage;
 	}
 
 	public String getLastMessage() {
