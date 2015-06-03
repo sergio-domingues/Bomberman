@@ -242,6 +242,9 @@ public class Bomberman {
 
 				for (int j = 0; j < this.bombas.size(); j++) {
 
+					if(this.bombas.get(j).getEstado() != Peca.Estado.ACTIVO)
+						continue;
+					
 					if (this.bombas.get(j).getEstadoBomba() != Bomba.EstadoBomba.EXPLODINDO)
 						continue;
 

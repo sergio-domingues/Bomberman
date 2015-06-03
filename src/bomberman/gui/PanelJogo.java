@@ -75,11 +75,21 @@ public class PanelJogo extends JPanel implements KeyListener {
 			}
 		}
 
+		// impressao bombas
 		for (int i = 0; i < bm.getBombas().size(); i++) {
 			if (bm.getBombas().get(i).getEstadoBomba() != EstadoBomba.EXPLODINDO) {
 				g.drawImage(bomba, (int) (bm.getBombas().get(i).getPos().getX() * TILESIZE),
 						(int) (bm.getBombas().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
 			}
+		}
+
+		// impressao pwups
+		for (int i = 0; i < bm.getPowerUps().size(); i++) {
+			// TODO SWITCH CASE PARA VER CONFORME O POWERUP A IMAGEM QUE DEVE
+			// SER IMPRESSA
+
+			g.drawImage(powerup, (int) (bm.getPowerUps().get(i).getPos().getX() * TILESIZE),
+					(int) (bm.getPowerUps().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
 		}
 
 		// impressao jogador
@@ -90,11 +100,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 						(int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
 		}
 
+		// impressao explosao
 		for (int i = 0; i < bm.getBombas().size(); i++) {
 
-			if(bm.getBombas().get(i).getEstado() == Peca.Estado.INATIVO)
+			if (bm.getBombas().get(i).getEstado() == Peca.Estado.INATIVO)
 				continue;
-			
+
 			if (bm.getBombas().get(i).getEstadoBomba() == EstadoBomba.EXPLODINDO) {
 
 				int ignore[] = { 0, 0, 0, 0 };
@@ -107,7 +118,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 				for (int j = 1; j <= bm.getBombas().get(i).getRaio(); j++) {
 					// y++
 					if (y + j < bm.getMapa().getTamanho() - 1 && bm.getMapa().getTab()[y + j][x] != 'X' && ignore[0] != 1) {
-						if (bm.getMapa().getTab()[y + j][x] == 'W'){
+						if (bm.getMapa().getTab()[y + j][x] == 'W') {
 							ignore[0] = 1;
 							g.drawImage(explosao, x * TILESIZE, (y + j) * TILESIZE, TILESIZE, TILESIZE, null);
 						}
@@ -118,7 +129,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 						ignore[0] = 1;
 					// y--
 					if (y - j > 0 && bm.getMapa().getTab()[y - j][x] != 'X' && ignore[1] != 1) {
-						if (bm.getMapa().getTab()[y - j][x] == 'W'){
+						if (bm.getMapa().getTab()[y - j][x] == 'W') {
 							ignore[1] = 1;
 							g.drawImage(explosao, x * TILESIZE, (y - j) * TILESIZE, TILESIZE, TILESIZE, null);
 						}
@@ -129,7 +140,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 						ignore[1] = 1;
 					// x++
 					if (x + j < bm.getMapa().getTamanho() - 1 && bm.getMapa().getTab()[y][x + j] != 'X' && ignore[2] != 1) {
-						if (bm.getMapa().getTab()[y][x + j] == 'W'){
+						if (bm.getMapa().getTab()[y][x + j] == 'W') {
 							ignore[2] = 1;
 							g.drawImage(explosao, (x + j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
 						}
@@ -140,7 +151,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 						ignore[2] = 1;
 					// x--
 					if (x - j > 0 && bm.getMapa().getTab()[y][x - j] != 'X' && ignore[3] != 1) {
-						if (bm.getMapa().getTab()[y][x - j] == 'W'){
+						if (bm.getMapa().getTab()[y][x - j] == 'W') {
 							ignore[3] = 1;
 							g.drawImage(explosao, (x - j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
 						}
@@ -152,18 +163,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 				}
 			}
 		}
-
-		// impressao pwups
-
-		for (int i = 0; i < bm.getPowerUps().size(); i++) {
-
-			// TODO SWITCH CASE PARA VER CONFORME O POWERUP A IMAGEM QUE DEVE
-			// SER IMPRESSA
-
-			g.drawImage(powerup, (int) (bm.getPowerUps().get(i).getPos().getX() * TILESIZE),
-					(int) (bm.getPowerUps().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
-		}
-
 	}
 
 	public void loadImages() {
