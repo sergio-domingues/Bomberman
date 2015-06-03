@@ -8,60 +8,104 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
 import java.util.Date;
 
 public class ConnectionId extends Thread {
 	public static int nextId = 1;
 	protected Socket clientSocket = null;
 	private int id;
-	boolean isConnected = true;
-	InputStream input;
-	OutputStream output;
-	private Date lastConn;
-	private String lastMessage;
+	private boolean isConnected = false;
+
+	private PrintWriter out;
+	private BufferedReader in;
+
+	private String lastMessage, ip;
 
 	ConnectionId(Socket clientSocket) {
 		id = nextId;
-		lastConn = new Date();
+		try {
+
+			clientSocket.setSoTimeout(10000);
+
+			out = new PrintWriter(clientSocket.getOutputStream(), true);
+			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+
+		} catch (SocketException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		this.clientSocket = clientSocket;
+		ip = clientSocket.getInetAddress().getHostAddress();
 		nextId++;
+	}
+
+	public String getIp() {
+		return ip;
 	}
 
 	public int getIdConnection() {
 		return id;
 	}
 
-	public void updateLastConn() {
-		lastConn = new Date();
-	}
-
 	public void run() {
-		while (isConnected) {
+		while (!isConnected) {
 
 			try {
-				PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-				BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+				String received = in.readLine();
+				System.out.println(received);
 
-				lastMessage = in.readLine();
-				System.out.println(id + ": " + lastMessage);
+				if (received.equals("ligar")) {
+					out.println("ACK");
+					out.flush();
+					isConnected = true;
+				}
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+		}
+
+		while (isConnected) {
+			readMessage();
 		}
 	}
 
 	public void closeConnection() {
 		try {
-			output.close();
-			input.close();
+			isConnected = false;
+			this.clientSocket.close();
+			nextId--;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
 
+	String readMessage() {
+		try {
+			lastMessage = in.readLine();
+		} catch (SocketTimeoutException e) {
+			System.err.println("Socket Desconectada");
+		} catch (IOException e) {
+			System.err.println("Erro a ler da Socket");
+			e.printStackTrace();
+		}
+
+		if (lastMessage == null) {
+			System.err.println("Cliente Desconectado");
+			closeConnection();
+		} else
+			System.out.println(id + ": " + lastMessage);
+		return lastMessage;
 	}
 
 	public String getLastMessage() {
 		return lastMessage;
 	}
+
+	public boolean isConnected() {
+		return isConnected;
+	}
+
 }

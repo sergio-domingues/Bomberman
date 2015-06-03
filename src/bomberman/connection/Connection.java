@@ -11,6 +11,12 @@ import java.net.UnknownHostException;
 public class Connection extends Thread {
 	protected ServerSocket serverSocket;
 	protected ConnectionId connections[] = new ConnectionId[4];
+
+	public enum ServerStatus {
+		GETTINGCLIENT, RUNNING, STOPPED
+	};
+
+	protected ServerStatus status = ServerStatus.GETTINGCLIENT;
 	protected boolean isRunning = true;
 	public final static int PORT = 4445;
 
@@ -29,24 +35,43 @@ public class Connection extends Thread {
 
 	public void run() {
 
-		while (this.isRunning) {
+		while (status == ServerStatus.GETTINGCLIENT) {
 			Socket clientSocket = null;
-			if (ConnectionId.nextId < 4) {
+			if (ConnectionId.nextId <=5) {
 				try {
 					clientSocket = this.serverSocket.accept();
-					connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
-					connections[ConnectionId.nextId - 2].start();
+					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
+						connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
+						connections[ConnectionId.nextId - 2].start();
+					}
 				} catch (IOException e) {
 					System.err.println("Erro Criar Cliente");
 					e.printStackTrace();
 				}
-			} else if (ConnectionId.nextId > 4) {
+			} else if (ConnectionId.nextId >5) {
 				System.err.println("Maximo de CLientes Atingido");
 			}
 
 		}
+
+		while (status == ServerStatus.RUNNING) {
+			for (int i = 0; i < 4; i++) {
+				if (!connections[i].isConnected()) {
+					connections[i] = null;
+				}
+			}
+		}
 		System.out.println("Server Stopped.");
 
+	}
+
+	private boolean existsConnect(String ip) {
+		for (int i = 0; i < 4; i++) {
+			if (connections[i] != null && connections[i].getIp() == ip) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 	public synchronized void stopServer() {
@@ -61,6 +86,10 @@ public class Connection extends Thread {
 	public static void main(String[] arg) {
 		new Connection().start();
 
+	}
+
+	public void changeStatus(ServerStatus status) {
+		this.status = status;
 	}
 
 }
