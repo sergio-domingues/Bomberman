@@ -32,7 +32,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private Timer timer;
 	private double tempo = 0;
 
-	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao;
+	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao, powerup;
 
 	public PanelJogo(Bomberman bm) {
 		setFocusable(true);
@@ -76,7 +76,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 		}
 
 		for (int i = 0; i < bm.getBombas().size(); i++) {
-
 			if (bm.getBombas().get(i).getEstadoBomba() != EstadoBomba.EXPLODINDO) {
 				g.drawImage(bomba, (int) (bm.getBombas().get(i).getPos().getX() * TILESIZE),
 						(int) (bm.getBombas().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
@@ -93,6 +92,9 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 		for (int i = 0; i < bm.getBombas().size(); i++) {
 
+			if(bm.getBombas().get(i).getEstado() == Peca.Estado.INATIVO)
+				continue;
+			
 			if (bm.getBombas().get(i).getEstadoBomba() == EstadoBomba.EXPLODINDO) {
 
 				int ignore[] = { 0, 0, 0, 0 };
@@ -105,8 +107,10 @@ public class PanelJogo extends JPanel implements KeyListener {
 				for (int j = 1; j <= bm.getBombas().get(i).getRaio(); j++) {
 					// y++
 					if (y + j < bm.getMapa().getTamanho() - 1 && bm.getMapa().getTab()[y + j][x] != 'X' && ignore[0] != 1) {
-						if (bm.getMapa().getTab()[y + j][x] == 'W')
+						if (bm.getMapa().getTab()[y + j][x] == 'W'){
 							ignore[0] = 1;
+							g.drawImage(explosao, x * TILESIZE, (y + j) * TILESIZE, TILESIZE, TILESIZE, null);
+						}
 
 						if (ignore[0] != 1)
 							g.drawImage(explosao, x * TILESIZE, (y + j) * TILESIZE, TILESIZE, TILESIZE, null);
@@ -114,17 +118,21 @@ public class PanelJogo extends JPanel implements KeyListener {
 						ignore[0] = 1;
 					// y--
 					if (y - j > 0 && bm.getMapa().getTab()[y - j][x] != 'X' && ignore[1] != 1) {
-						if (bm.getMapa().getTab()[y - j][x] == 'W')
+						if (bm.getMapa().getTab()[y - j][x] == 'W'){
 							ignore[1] = 1;
- 
+							g.drawImage(explosao, x * TILESIZE, (y - j) * TILESIZE, TILESIZE, TILESIZE, null);
+						}
+
 						if (ignore[1] != 1)
 							g.drawImage(explosao, x * TILESIZE, (y - j) * TILESIZE, TILESIZE, TILESIZE, null);
 					} else
 						ignore[1] = 1;
 					// x++
 					if (x + j < bm.getMapa().getTamanho() - 1 && bm.getMapa().getTab()[y][x + j] != 'X' && ignore[2] != 1) {
-						if (bm.getMapa().getTab()[y][x + j] == 'W')
+						if (bm.getMapa().getTab()[y][x + j] == 'W'){
 							ignore[2] = 1;
+							g.drawImage(explosao, (x + j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+						}
 
 						if (ignore[2] != 1)
 							g.drawImage(explosao, (x + j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
@@ -132,8 +140,10 @@ public class PanelJogo extends JPanel implements KeyListener {
 						ignore[2] = 1;
 					// x--
 					if (x - j > 0 && bm.getMapa().getTab()[y][x - j] != 'X' && ignore[3] != 1) {
-						if (bm.getMapa().getTab()[y][x - j] == 'W')
+						if (bm.getMapa().getTab()[y][x - j] == 'W'){
 							ignore[3] = 1;
+							g.drawImage(explosao, (x - j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+						}
 
 						if (ignore[3] != 1)
 							g.drawImage(explosao, (x - j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
@@ -141,6 +151,17 @@ public class PanelJogo extends JPanel implements KeyListener {
 						ignore[3] = 1;
 				}
 			}
+		}
+
+		// impressao pwups
+
+		for (int i = 0; i < bm.getPowerUps().size(); i++) {
+
+			// TODO SWITCH CASE PARA VER CONFORME O POWERUP A IMAGEM QUE DEVE
+			// SER IMPRESSA
+
+			g.drawImage(powerup, (int) (bm.getPowerUps().get(i).getPos().getX() * TILESIZE),
+					(int) (bm.getPowerUps().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
 		}
 
 	}
@@ -153,6 +174,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			jogador = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Jogador.png"));
 			bomba = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Bomba.png"));
 			explosao = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\explosao.png"));
+			powerup = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\powerup.png"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -184,6 +206,8 @@ public class PanelJogo extends JPanel implements KeyListener {
 				} else if (e.getKeyCode() == KeyEvent.VK_SPACE) {
 					bm.colocarBomba(j);
 				}
+
+				bm.checkPowerUp(j);
 			}
 
 			else {
@@ -198,6 +222,8 @@ public class PanelJogo extends JPanel implements KeyListener {
 				} else if (e.getKeyCode() == KeyEvent.VK_Z) {
 					bm.colocarBomba(j);
 				}
+
+				bm.checkPowerUp(j);
 			}
 		}
 
@@ -219,11 +245,11 @@ public class PanelJogo extends JPanel implements KeyListener {
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			tempo += 60;
-			
+
 			bm.updateBomba(60);
 
 			bm.verificaJogador(60);
-				
+
 			repaint();
 		}
 	};

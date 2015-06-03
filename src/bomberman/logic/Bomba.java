@@ -26,22 +26,23 @@ public class Bomba extends Peca {
 		return cronoBomba;
 	}
 
-	public boolean updateCronoBomba(double decremento) {
+	public int updateCronoBomba(double decremento) {
 		if (this.estadoBomba == EstadoBomba.ARMADA) {
 			cronoBomba -= decremento;
 			if (cronoBomba <= 0) {
 				estadoBomba = EstadoBomba.EXPLODINDO;
 				cronoBomba = TEMPOEXPLOSAO;
-				return true;
+				return 1;
 			}
 		} else if (this.estadoBomba == EstadoBomba.EXPLODINDO) {
 			cronoBomba -= decremento;
 			if (cronoBomba <= 0) {
 				this.estado = Peca.Estado.INATIVO;
-				jogador.adiBomba();
+				jogador.addBomba();
+				return 2;
 			}
 		}		
-		return false;
+		return 0;
 	}
 
 	public int getRaio() {

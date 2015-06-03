@@ -11,7 +11,7 @@ public class Peca {
 	protected char sigla;
 	protected Estado estado;
 
-	Peca(float x, float y, char sigla) {
+	Peca(double x, double y, char sigla) {
 		pos = new Pos(x, y);
 		this.sigla = sigla;
 		estado = Estado.ACTIVO;
@@ -85,7 +85,8 @@ public class Peca {
 
 			for (int i = 0; i <= Math.ceil(alcance); i++) {
 
-				if (tab.getTab()[(int) this.getPos().getY()][(int) this.getPos().getX() + (i * pos)] == 'X') {
+				if (tab.getTab()[(int) this.getPos().getY()][(int) this.getPos().getX() + (i * pos)] == 'X'
+						|| tab.getTab()[(int) this.getPos().getY()][(int) this.getPos().getX() + (i * pos)] == 'W') {
 					return false;
 				} else if (pos < 0) {
 					if ((int) Math.floor(p.getPos().getX()) == ((int) Math.floor(this.getPos().getX() + (pos * i)))) {
@@ -112,7 +113,8 @@ public class Peca {
 			}
 
 			for (int i = 0; i <= Math.ceil(alcance); i++) {
-				if (tab.getTab()[(int) this.getPos().getY() + (i * pos)][(int) this.getPos().getX()] == 'X') {
+				if (tab.getTab()[(int) this.getPos().getY() + (i * pos)][(int) this.getPos().getX()] == 'X'||
+						tab.getTab()[(int) this.getPos().getY() + (i * pos)][(int) this.getPos().getX()] == 'W') {
 					return false;
 				} else if (pos > 0) {
 					if ((int) Math.ceil(p.getPos().getY()) == ((int) Math.ceil(this.getPos().getY() + (i * pos)))) {

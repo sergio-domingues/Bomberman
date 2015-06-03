@@ -3,6 +3,10 @@ package bomberman.logic;
 import java.util.ArrayList;
 
 public class Jogador extends Peca {
+
+	// velocidades possiveis
+	private static final double velocidade_1 = 0.2, velocidade_2 = 0.25, velocidade_3 = 0.5, velocidade_4 = 1;
+
 	public static enum Direcao {
 		DIREITA, ESQUERDA, CIMA, BAIXO
 	};
@@ -16,22 +20,23 @@ public class Jogador extends Peca {
 	public static enum EstadoJogador {
 		MOVER, PARADO
 	};
-	
-	public static enum EstadoVulnerabilidade{
+
+	public static enum EstadoVulnerabilidade {
 		INVULNERAVEL, VULNERAVEL
 	};
 
-	// apenas sao possiveis valores cujo seu somatorio dê origem ao valor 1(exacto)
-	private double velocidade = 0.2; 
+	// apenas sao possiveis valores cujo seu somatorio dê origem ao valor
+	// 1(exacto)
+	private double velocidade = velocidade_1;
 	private int vidas = 2;
 	private int tempo_invulneravel = 1500;
 	private EstadoJogador estadoJogador;
 	private EstadoVulnerabilidade estadoVuln;
-	
+
 	private int raioBomba = 2;
 	private ArrayList<PowerUp> powerUps;
 
-//=======================================================
+	// =======================================================
 	public EstadoVulnerabilidade getEstadoVuln() {
 		return estadoVuln;
 	}
@@ -39,7 +44,7 @@ public class Jogador extends Peca {
 	public void setEstadoVuln(EstadoVulnerabilidade estadoVuln) {
 		this.estadoVuln = estadoVuln;
 	}
-	
+
 	public double getVelocidade() {
 		return velocidade;
 	}
@@ -79,37 +84,35 @@ public class Jogador extends Peca {
 		estadoJogador = EstadoJogador.PARADO;
 		estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
 	}
-	
-	public void updateTempoJogador(int decremento){
-		
+
+	public void updateTempoJogador(int decremento) {
+
 		this.tempo_invulneravel -= decremento;
-		
-		if(this.tempo_invulneravel <= 0){
+
+		if (this.tempo_invulneravel <= 0) {
 			this.tempo_invulneravel = 1500;
 			this.estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
 			System.out.println("renova tempo");
-		}		
-	}
-	
-	public void updateVelocidade(){	
-		
-		if( this.velocidade < 0.25 ){
-			this.velocidade = 0.25;		
-		}
-		else if(this.velocidade < 0.50){
-			this.velocidade = 0.50;
-		}
-		else if (this.velocidade < 1){
-			this.velocidade = 1;
 		}
 	}
-	
-	public void updateRangeBomba(int tamanho_mapa){
-		
-		if(this.raioBomba + 1 < tamanho_mapa - 2)
-			this.raioBomba++;		
+
+	// velocidadePowerUp associated
+	public void updateVelocidade() {
+		if (this.velocidade < velocidade_2) {
+			this.velocidade = velocidade_2;
+		} else if (this.velocidade < velocidade_3) {
+			this.velocidade = velocidade_3;
+		} else if (this.velocidade < velocidade_4) {
+			this.velocidade = velocidade_4;
+		}
 	}
-	
+
+	// incRangePowerUp associated
+	public void updateRangeBomba(int tamanho_mapa) {
+		// -2 -> parede
+		if (this.raioBomba + 1 < tamanho_mapa - 2)
+			this.raioBomba++;
+	}
 
 	static int getNextId() {
 		return nextId;
@@ -121,32 +124,28 @@ public class Jogador extends Peca {
 
 	public void move(Direcao d, Mapa mapa) {
 
-		double x, y, deltax, deltay, deltay_ceil;
+		double x, y, deltax, deltay;//, deltay_ceil;
 
 		// arredondamento correctivo : 2.99999 -> 3.0 | 2.00003 = 2.0
 		x = Math.round(this.pos.getX() * 100.0) / 100.0;
 		y = Math.round(this.pos.getY() * 100.0) / 100.0;
 		deltax = x - Math.floor(x);
 		deltay = y - Math.floor(y);
-		deltay_ceil = Math.ceil(y) - y;
-//
-//		System.out.println("x,y:");
-//		System.out.println(x);
-//		System.out.println(y);
-//		System.out.println("dx,dy:");
-//		System.out.println(deltax);
-//		System.out.println(deltay);
+		//deltay_ceil = Math.ceil(y) - y;
 
 		if (d == Direcao.CIMA) {
 			if (deltax == 0) { // coincide com inicio da celula
 				if ((int) (y - velocidade) > 0) {
-					if (mapa.getTab()[(int) Math.floor(y - velocidade)][(int) x] == ' ') {
+					if (mapa.getTab()[(int) Math.floor(y - velocidade)][(int) x] == ' '
+							|| mapa.getTab()[(int) Math.floor(y - velocidade)][(int) x] == 'P') {
 						this.pos.setY(y - velocidade);
 					}
 				}
-			} else if (deltax < 0.5 && deltax > 0.0 && mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ')
+			} else if (deltax < 0.5 && deltax > 0.0 && (mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' '
+					|| mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == 'P'))
 				this.move(Direcao.ESQUERDA, mapa);
-			else if (deltax > 0.5 && deltax < 1.0 && mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ')
+			else if (deltax > 0.5 && deltax < 1.0 && (mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' '
+					|| mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' '))
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.CIMA;
@@ -154,13 +153,16 @@ public class Jogador extends Peca {
 		} else if (d == Direcao.BAIXO) {
 			if (deltax == 0) {
 				if ((int) (y + velocidade) < mapa.getTamanho()) {
-					if (mapa.getTab()[(int) Math.ceil(y + velocidade)][(int) x] == ' ') {
+					if (mapa.getTab()[(int) Math.ceil(y + velocidade)][(int) x] == ' '
+							|| mapa.getTab()[(int) Math.ceil(y + velocidade)][(int) x] == 'P') {
 						this.pos.setY(y + velocidade);
 					}
 				}
-			} else if (deltax < 0.5 && deltax > 0.0 && mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == ' ')
+			} else if (deltax > 0.0 && deltax < 0.5  && (mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == ' '
+					|| mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == 'P'))
 				this.move(Direcao.ESQUERDA, mapa);
-			else if (deltax > 0.5 && deltax < 1.0 && mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' ')
+			else if (deltax > 0.5 && deltax < 1.0 && ( mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' '
+					|| mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == 'P'))
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.BAIXO;
@@ -168,13 +170,16 @@ public class Jogador extends Peca {
 		} else if (d == Direcao.ESQUERDA) {
 			if (deltay == 0) {
 				if ((int) (x - velocidade) > 0) {
-					if (mapa.getTab()[(int) y][(int) Math.floor(x - velocidade)] == ' ') {
+					if (mapa.getTab()[(int) y][(int) Math.floor(x - velocidade)] == ' '
+							|| mapa.getTab()[(int) y][(int) Math.floor(x - velocidade)] == 'P') {
 						this.pos.setX(x - velocidade);
 					}
 				}
-			} else if (deltay > 0.0 && deltay < 0.5 && mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' ')
+			} else if (deltay > 0.0 && deltay < 0.5 && ( mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' '
+					|| mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == 'P'))
 				this.move(Direcao.CIMA, mapa);
-			else if (deltay > 0.5 && deltay < 1.0 && mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' ')
+			else if (deltay > 0.5 && deltay < 1.0 && (mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' '
+					|| mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == 'P'))
 				this.move(Direcao.BAIXO, mapa);
 
 			this.ultimaDirecao = Direcao.ESQUERDA;
@@ -182,24 +187,37 @@ public class Jogador extends Peca {
 		} else if (d == Direcao.DIREITA) {
 			if (deltay == 0) {
 				if ((int) (x + velocidade) < mapa.getTamanho()) {
-					if (mapa.getTab()[(int) y][(int) Math.ceil(x + velocidade)] == ' ') {
+					if (mapa.getTab()[(int) y][(int) Math.ceil(x + velocidade)] == ' '
+							|| mapa.getTab()[(int) y][(int) Math.ceil(x + velocidade)] == 'P') {
 						this.pos.setX(x + velocidade);
 					}
 				}
-			} else if (deltay_ceil > 0.0 && deltay_ceil < 0.5 && mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' ')
-				this.move(Direcao.BAIXO, mapa);
-			else if (deltay_ceil > 0.5 && deltay_ceil < 1.0 && mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' ')
+			} else if (deltay > 0.0 && deltay < 0.5 && (mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' '
+					|| mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == 'P'))
 				this.move(Direcao.CIMA, mapa);
+			else if (deltay > 0.5 && deltay < 1.0 && (mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' '
+					|| mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == 'P'))
+				this.move(Direcao.BAIXO, mapa);
 
 			this.ultimaDirecao = Direcao.DIREITA;
 		}
+
+//		 System.out.println("x,y:");
+//		 System.out.println(x);
+//		 System.out.println(y);
+//		 System.out.println("dx,dy:");
+//		 System.out.println(deltax);
+//		 System.out.println(deltay);
+//		 System.out.println("dyceil:");
+//		 System.out.println(deltay_ceil);
+
 	}
 
 	public void decBomba() {
 		nrBombas--;
 	}
 
-	public void adiBomba() {
+	public void addBomba() {
 		nrBombas++;
 	}
 
