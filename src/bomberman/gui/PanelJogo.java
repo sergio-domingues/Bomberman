@@ -3,6 +3,7 @@ package bomberman.gui;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -28,11 +29,14 @@ import bomberman.logic.Peca;
 public class PanelJogo extends JPanel implements KeyListener {
 
 	public static final int TILESIZE = 50;
+	public static final int DOWN = 0, LEFT = 1, RIGHT = 2, UP = 3, STOP = 0, MOVE = 1;
+
 	private Bomberman bm;
 	private Timer timer;
 	private double tempo = 0;
 
 	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao, powerup;
+	private Image redPlayer, yellowPlayer, bluePlayer, greenPlayer;
 
 	public PanelJogo(Bomberman bm) {
 		setFocusable(true);
@@ -50,7 +54,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	@Override
 	public void paintComponent(Graphics g) {
-
 		super.paintComponent(g); // limpa fundo ...
 
 		BufferedImage img = floor; // default image
@@ -92,12 +95,44 @@ public class PanelJogo extends JPanel implements KeyListener {
 					(int) (bm.getPowerUps().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
 		}
 
+		int dx1, dx2, dy1, dy2, sx1, sx2, sy1, sy2, dir, move;
+
 		// impressao jogador
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
 
-			if (bm.getJogadores().get(i).getEstado() == Peca.Estado.ACTIVO)
-				g.drawImage(jogador, (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE),
-						(int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
+			if (bm.getJogadores().get(i).getEstado() != Peca.Estado.ACTIVO)
+				continue;
+			
+			if(bm.getJogadores().get(i).getEstadoJogador() == Jogador.EstadoJogador.MOVER)
+				move = MOVE;
+			else 
+				move = STOP;
+			
+			if(bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.BAIXO)
+				dir = DOWN;
+			else if(bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.CIMA)
+				dir = UP;
+			else if(bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.DIREITA)
+				dir = RIGHT;
+			else 
+				dir = LEFT;			
+
+			dx1 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE);
+			dy1 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE);
+			dx2 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE) + TILESIZE;
+			dy2 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE) + TILESIZE;
+			sx1 = (int) move * redPlayer.getWidth(null) / 4 ;
+			sy1 = (int) dir * redPlayer.getHeight(null) / 4;
+			sx2 = (int) sx1 + redPlayer.getWidth(null) / 4;
+			sy2 = (int) sy1 + redPlayer.getHeight(null) / 4;
+
+			g.drawImage(redPlayer, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+
+			
+			// g.drawImage(jogador, (int)
+			// (bm.getJogadores().get(i).getPos().getX() * TILESIZE),
+			// (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE),
+			// TILESIZE, TILESIZE, null);
 		}
 
 		// impressao explosao
@@ -174,6 +209,10 @@ public class PanelJogo extends JPanel implements KeyListener {
 			bomba = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Bomba.png"));
 			explosao = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\explosao.png"));
 			powerup = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\powerup.png"));
+			redPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerRed.png"));
+			yellowPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAmarelo.png"));
+			greenPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVerde.png"));
+			bluePlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAzul.png"));
 
 		} catch (IOException e) {
 			// TODO Auto-generated catch block

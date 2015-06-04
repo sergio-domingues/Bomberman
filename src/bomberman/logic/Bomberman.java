@@ -1,8 +1,14 @@
 package bomberman.logic;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
+
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
 
 import bomberman.logic.Builder.Difficulty;
 import bomberman.logic.Peca.Estado;
@@ -39,17 +45,54 @@ public class Bomberman {
 		return bombas;
 	}
 
-	public static void main(String[] args) {
-		Builder b = new Builder(Difficulty.EASY, 15);
-		imprimeMapa(b.createEasyMap(), 15);
-	}
-
 	public Bomberman() {
 		mapa = new Mapa(15);
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
 
 		adicionarJogador();
 		adicionarJogador();
+	}
+
+	//MUSICA
+	public void teste() throws URISyntaxException {
+
+		// System.out.print(System.getProperty("user.dir")+"\\resources\\sound.wav");
+		new javafx.embed.swing.JFXPanel();
+		
+		String s = new File(System.getProperty("user.dir") + "\\resources\\sound.mp3").toURI().toString();
+		MediaPlayer player = new MediaPlayer(new Media(s));
+		player.play();
+
+		// try{
+		// AudioInputStream audioInputStream =
+		// AudioSystem.getAudioInputStream(this.getClass().getResource("/resources/sound.wav"));
+		//
+		// Clip clip = AudioSystem.getClip();
+		// clip.open(audioInputStream);
+		// clip.start( );
+		// }
+		// catch(Exception ex)
+		// {System.out.println("lol"); }
+	}
+
+	public static void main(String[] args) throws IOException, URISyntaxException {
+		Builder b = new Builder(Difficulty.EASY, 15);
+		imprimeMapa(b.createEasyMap(), 15);
+
+		Bomberman bmb = new Bomberman();
+		bmb.teste();
+		// open the sound file as a Java input stream
+		// String songFile =
+		// System.getProperty("user.dir")+"\\resources\\sound.wav";
+		// InputStream in;
+		// AudioStream audioStream;
+		//
+		// in = new FileInputStream(songFile);
+		//
+		// audioStream = new AudioStream(in);
+		// // play the audio clip with the audioplayer class
+		// AudioPlayer.player.start(audioStream);
+
 	}
 
 	public static void imprimeMapa(char[][] tab, int tamanho) {
