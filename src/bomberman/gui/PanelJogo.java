@@ -12,11 +12,15 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.util.Iterator;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import sun.security.provider.VerificationProvider;
+import bomberman.connection.Connection;
+import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
 import bomberman.logic.Bomba;
 import bomberman.logic.Bomberman;
@@ -34,6 +38,8 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private Bomberman bm;
 	private Timer timer;
 	private double tempo = 0;
+	private static final int UPDATERATE = 100;// tempo de refresh objectos
+	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
 	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao, powerup;
 	private Image redPlayer, yellowPlayer, bluePlayer, greenPlayer;
@@ -46,10 +52,17 @@ public class PanelJogo extends JPanel implements KeyListener {
 		this.setVisible(true);
 		this.bm = bm;
 		this.addKeyListener(this);
-		timer = new Timer(60, timerListener);
+		timer = new Timer(UPDATERATE, timerListener);
 		timer.start();
 
-		Bomberman.imprimeMapa(bm.getMapa().getTab(), bm.getMapa().getTamanho());
+		System.out.println(bm.getJogadores().size());
+
+		for (int i = 0; i < bm.getJogadores().size(); i++) {
+			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
+		}
+
+		// Bomberman.imprimeMapa(bm.getMapa().getTab(),
+		// bm.getMapa().getTamanho());
 	}
 
 	@Override
@@ -102,33 +115,32 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 			if (bm.getJogadores().get(i).getEstado() != Peca.Estado.ACTIVO)
 				continue;
-			
-			if(bm.getJogadores().get(i).getEstadoJogador() == Jogador.EstadoJogador.MOVER)
+
+			if (bm.getJogadores().get(i).getEstadoJogador() == Jogador.EstadoJogador.MOVER)
 				move = MOVE;
-			else 
+			else
 				move = STOP;
-			
-			if(bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.BAIXO)
+
+			if (bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.BAIXO)
 				dir = DOWN;
-			else if(bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.CIMA)
+			else if (bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.CIMA)
 				dir = UP;
-			else if(bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.DIREITA)
+			else if (bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.DIREITA)
 				dir = RIGHT;
-			else 
-				dir = LEFT;			
+			else
+				dir = LEFT;
 
 			dx1 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE);
 			dy1 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE);
 			dx2 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE) + TILESIZE;
 			dy2 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE) + TILESIZE;
-			sx1 = (int) move * redPlayer.getWidth(null) / 4 ;
+			sx1 = (int) move * redPlayer.getWidth(null) / 4;
 			sy1 = (int) dir * redPlayer.getHeight(null) / 4;
 			sx2 = (int) sx1 + redPlayer.getWidth(null) / 4;
 			sy2 = (int) sy1 + redPlayer.getHeight(null) / 4;
 
 			g.drawImage(redPlayer, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 
-			
 			// g.drawImage(jogador, (int)
 			// (bm.getJogadores().get(i).getPos().getX() * TILESIZE),
 			// (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE),
@@ -215,7 +227,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 			bluePlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAzul.png"));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -282,11 +293,19 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			tempo += 60;
+			tempo += UPDATERATE;
 
-			bm.updateBomba(60);
+			for (int i = 0; i < animacoes.size(); i++) {
+				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
+					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).getDir());
+				}
+				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
+					bm.colocarBomba(bm.getJogadores().get(i));
+				}
+			}
 
-			bm.verificaJogador(60);
+			bm.updateBomba(UPDATERATE);
+			bm.verificaJogador(UPDATERATE);
 
 			repaint();
 		}

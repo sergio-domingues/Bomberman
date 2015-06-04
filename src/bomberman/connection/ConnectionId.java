@@ -7,8 +7,9 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.Observable;
 
-public class ConnectionId extends Thread {
+public class ConnectionId extends Observable implements Runnable {
 	public static int nextId = 1;
 	protected Socket clientSocket = null;
 	private int id;
@@ -94,6 +95,11 @@ public class ConnectionId extends Thread {
 			closeConnection();
 		} else
 			System.out.println(id + ": " + lastMessage);
+
+		setChanged();
+		notifyObservers(lastMessage);
+		clearChanged();
+
 		return lastMessage;
 	}
 

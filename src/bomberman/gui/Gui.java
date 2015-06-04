@@ -6,6 +6,8 @@ import java.awt.FlowLayout;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import bomberman.connection.Connection;
+import bomberman.connection.Connection.ServerStatus;
 import bomberman.logic.Bomberman;
 
 public class Gui {
@@ -22,6 +24,7 @@ public class Gui {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
+
 					Gui window = new Gui();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -42,6 +45,13 @@ public class Gui {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+		Connection con = Connection.getInstance();
+
+		System.out.println("ENTRA!");
+		while (con.getStatus() != ServerStatus.RUNNING) {
+		}
+		System.out.println("SAI!");
+
 		frame = new JFrame();
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());
