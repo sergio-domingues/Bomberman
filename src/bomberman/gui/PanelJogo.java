@@ -10,11 +10,14 @@ import java.awt.event.KeyListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import bomberman.connection.Connection;
+import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
 import bomberman.logic.Bomberman;
 import bomberman.logic.Jogador.Direcao;
@@ -27,6 +30,8 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private Bomberman bm;
 	private Timer timer;
 	private double tempo = 0;
+	private static final int UPDATERATE = 50;// tempo de refresh objectos
+	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
 	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao;
 
@@ -38,17 +43,22 @@ public class PanelJogo extends JPanel implements KeyListener {
 		this.setVisible(true);
 		this.bm = bm;
 		this.addKeyListener(this);
-		timer = new Timer(60, timerListener);
+		timer = new Timer(50, timerListener);
 		timer.start();
 
-		Bomberman.imprimeMapa(bm.getMapa().getTab(), bm.getMapa().getTamanho());
+		for (int i = 0; i < bm.getJogadores().size(); i++) {
+			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
+		}
+
+		// Bomberman.imprimeMapa(bm.getMapa().getTab(),
+		// bm.getMapa().getTamanho());
 	}
 
 	@Override
 	public void paintComponent(Graphics g) {
 
 		super.paintComponent(g); // limpa fundo ...
-		
+
 		BufferedImage img = floor; // default image
 
 		int xi, yi;
@@ -98,7 +108,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 			explosao = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\explosao.png"));
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
@@ -137,6 +146,11 @@ public class PanelJogo extends JPanel implements KeyListener {
 		public void actionPerformed(ActionEvent e) {
 			tempo += 60;
 			bm.updateBomba(60);
+			for (int i = 0; i < animacoes.size(); i++) {
+				if (animacoes.get(i).nextInstruction == Instruction.MOVE) {
+					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).dir);
+				}
+			}
 			repaint();
 		}
 	};

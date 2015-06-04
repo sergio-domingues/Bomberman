@@ -50,6 +50,10 @@ public class Bomberman {
 		}
 	}
 
+	public void moveJogador(Jogador j, Jogador.Direcao dir) {
+		j.move(dir, mapa);
+	}
+
 	void adicionarJogador() {
 		Jogador j;
 

@@ -1,26 +1,30 @@
 package bomberman.connection;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
 public class Connection extends Thread {
+	protected static Connection instance = null;
+	protected static int maxConnection = 1;
+
 	protected ServerSocket serverSocket;
-	protected ConnectionId connections[] = new ConnectionId[4];
+	protected ConnectionId connections[];
 
 	public enum ServerStatus {
 		GETTINGCLIENT, RUNNING, STOPPED
 	};
 
-	protected ServerStatus status = ServerStatus.GETTINGCLIENT;
+	protected ServerStatus status;
+
 	protected boolean isRunning = true;
 	public final static int PORT = 4445;
 
 	public Connection() {
+		connections = new ConnectionId[maxConnection];
+
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
@@ -33,40 +37,64 @@ public class Connection extends Thread {
 		}
 	}
 
+	public static Connection getInstance() {
+		if (instance == null) {
+			instance = new Connection();
+		}
+		return instance;
+	}
+
 	public void run() {
 
+		status = ServerStatus.GETTINGCLIENT;
+
 		while (status == ServerStatus.GETTINGCLIENT) {
-			Socket clientSocket = null;
-			if (ConnectionId.nextId <=5) {
+
+			if (ConnectionId.nextId <= maxConnection) {
 				try {
-					clientSocket = this.serverSocket.accept();
+					Socket clientSocket = this.serverSocket.accept();
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
 						connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
-						connections[ConnectionId.nextId - 2].start();
+						new Thread(connections[ConnectionId.nextId - 2]).start();
+
 					}
 				} catch (IOException e) {
 					System.err.println("Erro Criar Cliente");
 					e.printStackTrace();
 				}
-			} else if (ConnectionId.nextId >5) {
+			} else if (ConnectionId.nextId > maxConnection + 1) {
 				System.err.println("Maximo de CLientes Atingido");
 			}
 
+			for (int i = 0; i < maxConnection; i++) {
+				if (!connections[i].isConnected()) {
+					break;
+				}
+				if (i == maxConnection - 1) {
+					this.status = ServerStatus.RUNNING;
+				}
+
+			}
+
 		}
 
+		System.out.println("estas em runnig");
 		while (status == ServerStatus.RUNNING) {
-			for (int i = 0; i < 4; i++) {
-				if (!connections[i].isConnected()) {
-					connections[i] = null;
-				}
-			}
+			// System.out.println("estas em runnig");
+			// for (int i = 0; i < maxConnection; i++) {
+			// if (!connections[i].isConnected()) {
+			// connections[i] = null;
+			//
+			// }
+			// }
+			// TODO Fazer alguma coisa
 		}
-		System.out.println("Server Stopped.");
+		System.err.println("Server Stopped.");
 
 	}
 
 	private boolean existsConnect(String ip) {
-		for (int i = 0; i < 4; i++) {
+		for (int i = 0; i < maxConnection; i++) {
 			if (connections[i] != null && connections[i].getIp() == ip) {
 				return true;
 			}
@@ -90,6 +118,22 @@ public class Connection extends Thread {
 
 	public void changeStatus(ServerStatus status) {
 		this.status = status;
+	}
+
+	public ConnectionId[] getConnections() {
+		return connections;
+	}
+
+	public static int getMaxConnection() {
+		return maxConnection;
+	}
+
+	public static void setMaxConnection(int maxConnection) {
+		Connection.maxConnection = maxConnection;
+	}
+
+	public ServerStatus getStatus() {
+		return status;
 	}
 
 }

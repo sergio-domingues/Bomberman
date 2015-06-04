@@ -1,18 +1,15 @@
 package bomberman.connection;
 
 import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.Date;
+import java.util.Observable;
 
-public class ConnectionId extends Thread {
+public class ConnectionId extends Observable implements Runnable {
 	public static int nextId = 1;
 	protected Socket clientSocket = null;
 	private int id;
@@ -61,6 +58,9 @@ public class ConnectionId extends Thread {
 					out.println("ACK");
 					out.flush();
 					isConnected = true;
+				} else {
+					setChanged();
+					notifyObservers(received);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
