@@ -282,12 +282,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			tempo += 60;
+			tempo += 60;			
 
 			bm.updateBomba(60);
-
+			
 			bm.verificaJogador(60);
-
+			
 			repaint();
 		}
 	};

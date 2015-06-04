@@ -237,7 +237,7 @@ public class Bomberman {
 			if (jogadores.get(i).getEstado() != Peca.Estado.ACTIVO)
 				continue;
 
-			if (jogadores.get(i).ver(b, mapa, b.getRaio())) {
+			if (jogadores.get(i).ver(b, mapa, b.getRaio()) && jogadores.get(i).getEstadoVuln() == Jogador.EstadoVulnerabilidade.VULNERAVEL) {
 
 				jogadores.get(i).decVidas();
 				jogadores.get(i).setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);

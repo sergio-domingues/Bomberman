@@ -29,7 +29,7 @@ public class Jogador extends Peca {
 	// 1(exacto)
 	private double velocidade = velocidade_1;
 	private int vidas = 2;
-	private int tempo_invulneravel = 1500;
+	private int tempo_invulneravel = 2500;
 	private EstadoJogador estadoJogador;
 	private EstadoVulnerabilidade estadoVuln;
 
