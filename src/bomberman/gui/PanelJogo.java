@@ -16,6 +16,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import sun.security.provider.VerificationProvider;
 import bomberman.connection.Connection;
 import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
@@ -30,7 +31,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private Bomberman bm;
 	private Timer timer;
 	private double tempo = 0;
-	private static final int UPDATERATE = 50;// tempo de refresh objectos
+	private static final int UPDATERATE = 100;// tempo de refresh objectos
 	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
 	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao;
@@ -43,8 +44,10 @@ public class PanelJogo extends JPanel implements KeyListener {
 		this.setVisible(true);
 		this.bm = bm;
 		this.addKeyListener(this);
-		timer = new Timer(50, timerListener);
+		timer = new Timer(UPDATERATE, timerListener);
 		timer.start();
+
+		System.out.println(bm.getJogadores().size());
 
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
 			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
@@ -144,13 +147,18 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			tempo += 60;
-			bm.updateBomba(60);
+
+			tempo += UPDATERATE;
+			bm.updateBomba(UPDATERATE);
 			for (int i = 0; i < animacoes.size(); i++) {
-				if (animacoes.get(i).nextInstruction == Instruction.MOVE) {
-					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).dir);
+				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
+					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).getDir());
+				}
+				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
+					bm.colocarBomba(bm.getJogadores().get(i));
 				}
 			}
+			
 			repaint();
 		}
 	};

@@ -14,18 +14,22 @@ public class AnimJogador implements Observer {
 		PLANTBOMB, MOVE, STOP
 	}
 
-	public Jogador.Direcao dir = null;
-	public Instruction nextInstruction = null;
+	private Jogador.Direcao dir = null;
+	private Instruction nextInstruction = null;
+
 
 	public AnimJogador(ConnectionId conn) {
 		this.conn = conn;
 		conn.addObserver(this);
+		
 	}
 
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String message = (String) arg1;
 
+		System.out.println("update");
+		
 		if (message.equals("moveLeftPressed")) {
 			nextInstruction = Instruction.MOVE;
 			dir = Direcao.ESQUERDA;
@@ -50,5 +54,13 @@ public class AnimJogador implements Observer {
 			nextInstruction = Instruction.PLANTBOMB;
 		}
 		
+	}
+	
+	public Jogador.Direcao getDir() {
+		return dir;
+	}
+
+	public Instruction getNextInstruction() {
+		return nextInstruction;
 	}
 }

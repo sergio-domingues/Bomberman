@@ -58,9 +58,6 @@ public class ConnectionId extends Observable implements Runnable {
 					out.println("ACK");
 					out.flush();
 					isConnected = true;
-				} else {
-					setChanged();
-					notifyObservers(received);
 				}
 			} catch (IOException e) {
 				e.printStackTrace();
@@ -97,6 +94,11 @@ public class ConnectionId extends Observable implements Runnable {
 			closeConnection();
 		} else
 			System.out.println(id + ": " + lastMessage);
+
+		setChanged();
+		notifyObservers(lastMessage);
+		clearChanged();
+
 		return lastMessage;
 	}
 

@@ -24,7 +24,8 @@ public class Connection extends Thread {
 
 	public Connection() {
 		connections = new ConnectionId[maxConnection];
-
+		status = ServerStatus.GETTINGCLIENT;
+		
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
@@ -40,13 +41,12 @@ public class Connection extends Thread {
 	public static Connection getInstance() {
 		if (instance == null) {
 			instance = new Connection();
+			instance.start();
 		}
 		return instance;
 	}
 
 	public void run() {
-
-		status = ServerStatus.GETTINGCLIENT;
 
 		while (status == ServerStatus.GETTINGCLIENT) {
 
@@ -65,7 +65,7 @@ public class Connection extends Thread {
 			} else if (ConnectionId.nextId > maxConnection + 1) {
 				System.err.println("Maximo de CLientes Atingido");
 			}
-
+			
 			for (int i = 0; i < maxConnection; i++) {
 				if (!connections[i].isConnected()) {
 					break;
@@ -78,7 +78,7 @@ public class Connection extends Thread {
 
 		}
 
-		System.out.println("estas em runnig");
+		System.out.println(this.status);
 		while (status == ServerStatus.RUNNING) {
 			// System.out.println("estas em runnig");
 			// for (int i = 0; i < maxConnection; i++) {
@@ -120,7 +120,7 @@ public class Connection extends Thread {
 		this.status = status;
 	}
 
-	public ConnectionId[] getConnections() {
+	synchronized public ConnectionId[] getConnections() {
 		return connections;
 	}
 
@@ -132,7 +132,7 @@ public class Connection extends Thread {
 		Connection.maxConnection = maxConnection;
 	}
 
-	public ServerStatus getStatus() {
+	synchronized public ServerStatus getStatus() {
 		return status;
 	}
 
