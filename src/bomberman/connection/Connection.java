@@ -8,7 +8,7 @@ import java.net.UnknownHostException;
 
 public class Connection extends Thread {
 	protected static Connection instance = null;
-	protected static int maxConnection = 1;
+	protected static int maxConnection = 2;
 
 	protected ServerSocket serverSocket;
 	protected ConnectionId connections[];
@@ -79,14 +79,12 @@ public class Connection extends Thread {
 
 		System.out.println(this.status);
 		while (status == ServerStatus.RUNNING) {
-			// System.out.println("estas em runnig");
-			// for (int i = 0; i < maxConnection; i++) {
-			// if (!connections[i].isConnected()) {
-			// connections[i] = null;
-			//
-			// }
-			// }
-			// TODO Fazer alguma coisa
+			for (int i = 0; i < maxConnection; i++) {
+				if (!connections[i].isConnected()) {
+					connections[i] = null;
+				}
+			}
+		
 		}
 		System.err.println("Server Stopped.");
 
@@ -111,7 +109,7 @@ public class Connection extends Thread {
 	}
 
 	public static void main(String[] arg) {
-		new Connection().start();
+		getInstance();
 
 	}
 
