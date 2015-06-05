@@ -1,5 +1,9 @@
 package bomberman.logic;
 
+import bomberman.gui.AnimBomb;
+import bomberman.gui.AnimExplosion;
+import bomberman.gui.Animation;
+
 public class Bomba extends Peca {
 	public static enum EstadoBomba {
 		ARMADA, EXPLODINDO
@@ -11,6 +15,8 @@ public class Bomba extends Peca {
 	private double cronoBomba;
 	private int raio;
 	private EstadoBomba estadoBomba;
+	private Animation bombSetAnim;
+	//private AnimExplosion bomExplosionAnim;
 
 	Jogador jogador;
 
@@ -20,17 +26,20 @@ public class Bomba extends Peca {
 		this.jogador = j;
 		this.cronoBomba = TEMPOARMADO;
 		this.estadoBomba = EstadoBomba.ARMADA;
+		this.bombSetAnim = new AnimBomb(j.getColor());
 	}
 
 	public double getCronoBomba() {
 		return cronoBomba;
 	}
 
+	//TODO INICIALIZAR ANIMACAO EXPLOSAO
 	public int updateCronoBomba(double decremento) {
 		if (this.estadoBomba == EstadoBomba.ARMADA) {
 			cronoBomba -= decremento;
 			if (cronoBomba <= 0) {
 				estadoBomba = EstadoBomba.EXPLODINDO;
+				this.bombSetAnim = new AnimExplosion(this.jogador.getColor());
 				cronoBomba = TEMPOEXPLOSAO;
 				return 1;
 			}
@@ -59,6 +68,14 @@ public class Bomba extends Peca {
 
 	public void setEstadoBomba(EstadoBomba estadoBomba) {
 		this.estadoBomba = estadoBomba;
+	}
+
+	public Animation getBombAnim() {
+		return bombSetAnim;
+	}
+
+	public void setBombAnim(Animation bombAnim) {
+		this.bombSetAnim = bombAnim;
 	}
 
 }

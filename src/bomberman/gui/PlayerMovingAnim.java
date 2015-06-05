@@ -13,7 +13,7 @@ public class PlayerMovingAnim implements Animation {
 
 	private int tempo;
 	private Image sprite;
-	private int dir, lastMoveIndex = 0, UPDATERATE = 200;
+	private int dir, lastMoveIndex = 0, UPDATERATE = 80;
 
 	private static final int TILESIZE = PanelJogo.TILESIZE;
 	public static final int DOWN = 0, LEFT = 1, RIGHT = 2, UP = 3, MOVE = 1;
@@ -21,7 +21,7 @@ public class PlayerMovingAnim implements Animation {
 	public PlayerMovingAnim(Animation.ColorPlayer color, Jogador.Direcao dir) {
 		changeColor(color);
 		updateDir(dir);
-		tempo = 0;
+		this.tempo = 0;
 	}
 
 	@Override
@@ -32,8 +32,8 @@ public class PlayerMovingAnim implements Animation {
 		dy1 = (int) (posy * TILESIZE);
 		dx2 = (int) (dx1 + TILESIZE);
 		dy2 = (int) (dy1 + TILESIZE);
-		sx1 = (int) (lastMoveIndex * sprite.getWidth(null) / 4);
-		sy1 = (int) (dir * sprite.getHeight(null) / 4);
+		sx1 = (int) (this.lastMoveIndex * sprite.getWidth(null) / 4);
+		sy1 = (int) (this.dir * sprite.getHeight(null) / 4);
 		sx2 = (int) (sx1 + sprite.getWidth(null) / 4);
 		sy2 = (int) (sy1 + sprite.getHeight(null) / 4);
 
@@ -43,16 +43,14 @@ public class PlayerMovingAnim implements Animation {
 	@Override
 	public void update(int tempo) {
 		this.tempo += tempo;
-
-		if (this.tempo > UPDATERATE) {
+		
+		if (this.tempo >= UPDATERATE) {
 			this.tempo -= UPDATERATE;
 
 			if (this.lastMoveIndex == 3) {
 				this.lastMoveIndex = 0;
 			} else
 				this.lastMoveIndex++;
-			
-			System.out.println(this.lastMoveIndex);
 		}
 	}
 

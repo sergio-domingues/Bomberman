@@ -16,6 +16,14 @@ public class Jogador extends Peca {
 	};
 
 	private Animation.ColorPlayer color;
+	public Animation.ColorPlayer getColor() {
+		return color;
+	}
+
+	public void setColor(Animation.ColorPlayer color) {
+		this.color = color;
+	}
+
 	private Direcao ultimaDirecao;
 	private int nrBombas = 2; // TODO Alterar pra valor desejado
 	private static int nextId = 1;
@@ -34,7 +42,7 @@ public class Jogador extends Peca {
 	// 1(exacto)
 	private double velocidade = velocidade_1;
 	private int vidas = 2;
-	private int tempo_invulneravel = 1500;
+	private int tempo_invulneravel = 2500;
 	private EstadoJogador estadoJogador;
 	private EstadoVulnerabilidade estadoVuln;
 
