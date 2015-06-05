@@ -50,7 +50,7 @@ public class Bomberman {
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
 
 		adicionarJogador();
-		adicionarJogador();
+//		adicionarJogador();
 	}
 
 	//MUSICA
@@ -104,6 +104,10 @@ public class Bomberman {
 
 			System.out.print("\n");
 		}
+	}
+
+	public void moveJogador(Jogador j, Jogador.Direcao dir) {
+		j.move(dir, mapa);
 	}
 
 	void adicionarJogador() {
