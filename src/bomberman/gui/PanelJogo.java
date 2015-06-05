@@ -38,7 +38,9 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private Bomberman bm;
 	private Timer timer;
 	private double tempo = 0;
-	private static final int UPDATERATE = 100;// tempo de refresh objectos
+	private int dir = 2, color = 0;
+
+	private static final int UPDATERATE = 70;// tempo de refresh objectos
 	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
 	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao, powerup;
@@ -57,12 +59,73 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 		System.out.println(bm.getJogadores().size());
 
-		for (int i = 0; i < bm.getJogadores().size(); i++) {
-			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
-		}
+		// for (int i = 0; i < bm.getJogadores().size(); i++) {
+		//
+		// bm.getJogadores().get(i).setAnimation(new
+		// PlayerMovingAnim(parseColor(color), parseDirection(dir)));
+		// color++;
+		// if (dir == 2)
+		// dir = 1;
+		// else
+		// dir = 2;
+		//
+		// // animacoes.add(new
+		// // AnimJogador(Connection.getInstance().getConnections()[i]));
+		// }
 
 		// Bomberman.imprimeMapa(bm.getMapa().getTab(),
 		// bm.getMapa().getTamanho());
+	}
+
+	// converte indice dir para TIPO DIRECCAO correspondente
+
+	public int parseDirection(Jogador.Direcao dir) {
+
+		if (dir == Jogador.Direcao.BAIXO)
+			return DOWN;
+		else if (dir == Jogador.Direcao.CIMA)
+			return UP;
+		else if (dir == Jogador.Direcao.ESQUERDA)
+			return LEFT;
+		else
+			return RIGHT;
+	}
+
+	public Jogador.Direcao parseDirection(int dir) {
+
+		if (dir == DOWN)
+			return Jogador.Direcao.BAIXO;
+		else if (dir == UP)
+			return Jogador.Direcao.CIMA;
+		else if (dir == LEFT)
+			return Jogador.Direcao.ESQUERDA;
+		else
+			return Jogador.Direcao.DIREITA;
+	}
+
+	// converte indice color para TIPO colorPlayer correspondente
+	public Animation.ColorPlayer parseColor(int color) {
+
+		if (color == 0)
+			return Animation.ColorPlayer.RED;
+		else if (color == 1)
+			return Animation.ColorPlayer.BLUE;
+		else if (color == 2)
+			return Animation.ColorPlayer.GREEN;
+		else
+			return Animation.ColorPlayer.YELLOW;
+	}
+
+	public int parseColor(Animation.ColorPlayer color) {
+
+		if (color == Animation.ColorPlayer.RED)
+			return 0;
+		else if (color == Animation.ColorPlayer.BLUE)
+			return 1;
+		else if (color == Animation.ColorPlayer.GREEN)
+			return 2;
+		else
+			return 3;
 	}
 
 	@Override
@@ -108,7 +171,8 @@ public class PanelJogo extends JPanel implements KeyListener {
 					(int) (bm.getPowerUps().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
 		}
 
-		int dx1, dx2, dy1, dy2, sx1, sx2, sy1, sy2, dir, move;
+		// int dx1, dx2, dy1, dy2, sx1, sx2, sy1, sy2, dir, move;
+		double dx1, dy1;
 
 		// impressao jogador
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
@@ -116,30 +180,35 @@ public class PanelJogo extends JPanel implements KeyListener {
 			if (bm.getJogadores().get(i).getEstado() != Peca.Estado.ACTIVO)
 				continue;
 
-			if (bm.getJogadores().get(i).getEstadoJogador() == Jogador.EstadoJogador.MOVER)
-				move = MOVE;
-			else
-				move = STOP;
+			dx1 = bm.getJogadores().get(i).getPos().getX(); // * TILESIZE);
+															// //POSX
+			dy1 = bm.getJogadores().get(i).getPos().getY();// * TILESIZE);
+															// //POSY
 
-			if (bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.BAIXO)
-				dir = DOWN;
-			else if (bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.CIMA)
-				dir = UP;
-			else if (bm.getJogadores().get(i).getUltimaDirecao() == Jogador.Direcao.DIREITA)
-				dir = RIGHT;
-			else
-				dir = LEFT;
+			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1);
 
-			dx1 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE);
-			dy1 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE);
-			dx2 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE) + TILESIZE;
-			dy2 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE) + TILESIZE;
-			sx1 = (int) move * redPlayer.getWidth(null) / 4;
-			sy1 = (int) dir * redPlayer.getHeight(null) / 4;
-			sx2 = (int) sx1 + redPlayer.getWidth(null) / 4;
-			sy2 = (int) sy1 + redPlayer.getHeight(null) / 4;
-
-			g.drawImage(redPlayer, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+			// if (bm.getJogadores().get(i).getUltimaDirecao() ==
+			// Jogador.Direcao.BAIXO)
+			// dir = DOWN;
+			// else if (bm.getJogadores().get(i).getUltimaDirecao() ==
+			// Jogador.Direcao.CIMA)
+			// dir = UP;
+			// else if (bm.getJogadores().get(i).getUltimaDirecao() ==
+			// Jogador.Direcao.DIREITA)
+			// dir = RIGHT;
+			// else
+			// dir = LEFT;
+			//
+			// dx2 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE)
+			// + TILESIZE;
+			// dy2 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE)
+			// + TILESIZE;
+			// sx1 = (int) MOVE * redPlayer.getWidth(null) / 4;
+			// sy1 = (int) dir * redPlayer.getHeight(null) / 4;
+			// sx2 = (int) sx1 + redPlayer.getWidth(null) / 4;
+			// sy2 = (int) sy1 + redPlayer.getHeight(null) / 4;
+			// g.drawImage(redPlayer, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2,
+			// null);
 
 			// g.drawImage(jogador, (int)
 			// (bm.getJogadores().get(i).getPos().getX() * TILESIZE),
@@ -221,7 +290,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			bomba = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Bomba.png"));
 			explosao = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\explosao.png"));
 			powerup = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\powerup.png"));
-			redPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerRed.png"));
+			redPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVermelho.png"));
 			yellowPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAmarelo.png"));
 			greenPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVerde.png"));
 			bluePlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAzul.png"));
@@ -242,6 +311,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 				continue;
 
 			j.setEstadoJogador(EstadoJogador.MOVER);
+
 			if (j.getId() == 1) {
 
 				if (e.getKeyCode() == KeyEvent.VK_UP) {
@@ -276,7 +346,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 			}
 		}
 
-		this.repaint();
 	}
 
 	@Override
@@ -295,13 +364,21 @@ public class PanelJogo extends JPanel implements KeyListener {
 		public void actionPerformed(ActionEvent e) {
 			tempo += UPDATERATE;
 
-			for (int i = 0; i < animacoes.size(); i++) {
-				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
-					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).getDir());
-				}
-				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
-					bm.colocarBomba(bm.getJogadores().get(i));
-				}
+			// for (int i = 0; i < animacoes.size(); i++) {
+			// if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
+			// //bm.moveJogador(bm.getJogadores().get(i),
+			// animacoes.get(i).getDir());
+			// }
+			// if (animacoes.get(i).getNextInstruction() ==
+			// Instruction.PLANTBOMB) {
+			// bm.colocarBomba(bm.getJogadores().get(i));
+			// }
+			// }
+
+			for (int i = 0; i < bm.getJogadores().size(); i++) {
+
+				if (bm.getJogadores().get(i).getEstado() == Peca.Estado.ACTIVO)
+					bm.getJogadores().get(i).getAnimation().update(UPDATERATE);
 			}
 
 			bm.updateBomba(UPDATERATE);

@@ -20,8 +20,7 @@ public class AnimJogador implements Observer {
 
 	public AnimJogador(ConnectionId conn) {
 		this.conn = conn;
-		conn.addObserver(this);
-		
+		conn.addObserver(this);	
 	}
 
 	@Override
