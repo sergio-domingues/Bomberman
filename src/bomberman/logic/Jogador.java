@@ -16,6 +16,14 @@ public class Jogador extends Peca {
 	};
 
 	private Animation.ColorPlayer color;
+	public Animation.ColorPlayer getColor() {
+		return color;
+	}
+
+	public void setColor(Animation.ColorPlayer color) {
+		this.color = color;
+	}
+
 	private Direcao ultimaDirecao;
 	private int nrBombas = 2; // TODO Alterar pra valor desejado
 	private static int nextId = 1;

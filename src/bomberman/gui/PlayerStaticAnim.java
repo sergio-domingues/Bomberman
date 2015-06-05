@@ -36,10 +36,11 @@ public class PlayerStaticAnim implements Animation {
 		sy2 = (int) (sy1 + sprite.getHeight(null) / 4);
 
 		g.drawImage(sprite, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
+		
 	}
 
 	@Override
-	public void update(int tempo) {		
+	public void update(int tempo) {
 	}
 
 	public int getDir() {
@@ -76,15 +77,12 @@ public class PlayerStaticAnim implements Animation {
 			case RED:
 				sprite = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVermelho.png"));
 				break;
-
 			case YELLOW:
 				sprite = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAmarelo.png"));
 				break;
-
 			case GREEN:
 				sprite = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVerde.png"));
 				break;
-
 			case BLUE:
 				sprite = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAzul.png"));
 				break;

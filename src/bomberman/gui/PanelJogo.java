@@ -18,11 +18,7 @@ import javax.imageio.ImageIO;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import sun.security.provider.VerificationProvider;
-import bomberman.connection.Connection;
-import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
-import bomberman.logic.Bomba;
 import bomberman.logic.Bomberman;
 import bomberman.logic.Jogador;
 import bomberman.logic.Jogador.Direcao;
@@ -43,7 +39,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private static final int UPDATERATE = 70;// tempo de refresh objectos
 	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
-	private BufferedImage wall, fixedWall, floor, jogador, bomba, explosao, powerup;
+	private BufferedImage box, wall, floor, powerup;
 	private Image redPlayer, yellowPlayer, bluePlayer, greenPlayer;
 
 	public PanelJogo(Bomberman bm) {
@@ -140,11 +136,11 @@ public class PanelJogo extends JPanel implements KeyListener {
 			for (int j = 0; j < bm.getMapa().getTamanho(); j++) {
 
 				if (bm.getMapa().getTab()[i][j] == 'X') {
-					img = fixedWall;
+					img = wall;
 				} else if (bm.getMapa().getTab()[i][j] == ' ') {
 					img = floor;
 				} else if (bm.getMapa().getTab()[i][j] == 'W') {
-					img = wall;
+					img = box;
 				}
 
 				xi = j * TILESIZE;
@@ -157,8 +153,14 @@ public class PanelJogo extends JPanel implements KeyListener {
 		// impressao bombas
 		for (int i = 0; i < bm.getBombas().size(); i++) {
 			if (bm.getBombas().get(i).getEstadoBomba() != EstadoBomba.EXPLODINDO) {
-				g.drawImage(bomba, (int) (bm.getBombas().get(i).getPos().getX() * TILESIZE),
-						(int) (bm.getBombas().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
+				double x, y;
+				x = bm.getBombas().get(i).getPos().getX();
+				y = bm.getBombas().get(i).getPos().getY();
+				// g.drawImage(bomba, (int)
+				// (bm.getBombas().get(i).getPos().getX() * TILESIZE),
+				// (int) (bm.getBombas().get(i).getPos().getY() * TILESIZE),
+				// TILESIZE, TILESIZE, null);
+				bm.getBombas().get(i).getBombAnim().render(g, x, y);
 			}
 		}
 
@@ -180,43 +182,13 @@ public class PanelJogo extends JPanel implements KeyListener {
 			if (bm.getJogadores().get(i).getEstado() != Peca.Estado.ACTIVO)
 				continue;
 
-			dx1 = bm.getJogadores().get(i).getPos().getX(); // * TILESIZE);
-															// //POSX
-			dy1 = bm.getJogadores().get(i).getPos().getY();// * TILESIZE);
-															// //POSY
+			dx1 = bm.getJogadores().get(i).getPos().getX();
+			dy1 = bm.getJogadores().get(i).getPos().getY();
 
 			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1);
-
-			// if (bm.getJogadores().get(i).getUltimaDirecao() ==
-			// Jogador.Direcao.BAIXO)
-			// dir = DOWN;
-			// else if (bm.getJogadores().get(i).getUltimaDirecao() ==
-			// Jogador.Direcao.CIMA)
-			// dir = UP;
-			// else if (bm.getJogadores().get(i).getUltimaDirecao() ==
-			// Jogador.Direcao.DIREITA)
-			// dir = RIGHT;
-			// else
-			// dir = LEFT;
-			//
-			// dx2 = (int) (bm.getJogadores().get(i).getPos().getX() * TILESIZE)
-			// + TILESIZE;
-			// dy2 = (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE)
-			// + TILESIZE;
-			// sx1 = (int) MOVE * redPlayer.getWidth(null) / 4;
-			// sy1 = (int) dir * redPlayer.getHeight(null) / 4;
-			// sx2 = (int) sx1 + redPlayer.getWidth(null) / 4;
-			// sy2 = (int) sy1 + redPlayer.getHeight(null) / 4;
-			// g.drawImage(redPlayer, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2,
-			// null);
-
-			// g.drawImage(jogador, (int)
-			// (bm.getJogadores().get(i).getPos().getX() * TILESIZE),
-			// (int) (bm.getJogadores().get(i).getPos().getY() * TILESIZE),
-			// TILESIZE, TILESIZE, null);
 		}
 
-		// impressao explosao
+		// impressao bombas
 		for (int i = 0; i < bm.getBombas().size(); i++) {
 
 			if (bm.getBombas().get(i).getEstado() == Peca.Estado.INATIVO)
@@ -228,7 +200,10 @@ public class PanelJogo extends JPanel implements KeyListener {
 				int x = (int) bm.getBombas().get(i).getPos().getX();
 				int y = (int) bm.getBombas().get(i).getPos().getY();
 
-				g.drawImage(explosao, x * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+				double posx = bm.getBombas().get(i).getPos().getX();
+				double posy = bm.getBombas().get(i).getPos().getY();
+
+				bm.getBombas().get(i).getBombAnim().render(g, posx, posy);
 
 				// impressao explosao
 				for (int j = 1; j <= bm.getBombas().get(i).getRaio(); j++) {
@@ -236,44 +211,48 @@ public class PanelJogo extends JPanel implements KeyListener {
 					if (y + j < bm.getMapa().getTamanho() - 1 && bm.getMapa().getTab()[y + j][x] != 'X' && ignore[0] != 1) {
 						if (bm.getMapa().getTab()[y + j][x] == 'W') {
 							ignore[0] = 1;
-							g.drawImage(explosao, x * TILESIZE, (y + j) * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx, posy + j);
 						}
 
 						if (ignore[0] != 1)
-							g.drawImage(explosao, x * TILESIZE, (y + j) * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx, posy + j);
+
 					} else
 						ignore[0] = 1;
 					// y--
 					if (y - j > 0 && bm.getMapa().getTab()[y - j][x] != 'X' && ignore[1] != 1) {
 						if (bm.getMapa().getTab()[y - j][x] == 'W') {
 							ignore[1] = 1;
-							g.drawImage(explosao, x * TILESIZE, (y - j) * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx, posy - j);
 						}
 
 						if (ignore[1] != 1)
-							g.drawImage(explosao, x * TILESIZE, (y - j) * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx, posy - j);
+
 					} else
 						ignore[1] = 1;
 					// x++
 					if (x + j < bm.getMapa().getTamanho() - 1 && bm.getMapa().getTab()[y][x + j] != 'X' && ignore[2] != 1) {
 						if (bm.getMapa().getTab()[y][x + j] == 'W') {
 							ignore[2] = 1;
-							g.drawImage(explosao, (x + j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx + j, posy);
 						}
 
 						if (ignore[2] != 1)
-							g.drawImage(explosao, (x + j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx + j, posy);
+
 					} else
 						ignore[2] = 1;
 					// x--
 					if (x - j > 0 && bm.getMapa().getTab()[y][x - j] != 'X' && ignore[3] != 1) {
 						if (bm.getMapa().getTab()[y][x - j] == 'W') {
 							ignore[3] = 1;
-							g.drawImage(explosao, (x - j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx - j, posy);
 						}
 
 						if (ignore[3] != 1)
-							g.drawImage(explosao, (x - j) * TILESIZE, y * TILESIZE, TILESIZE, TILESIZE, null);
+							bm.getBombas().get(i).getBombAnim().render(g, posx - j, posy);
+
 					} else
 						ignore[3] = 1;
 				}
@@ -283,17 +262,10 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	public void loadImages() {
 		try {
-			wall = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Wall.png"));
-			fixedWall = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\FixedWall.png"));
-			floor = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Floor.png"));
-			jogador = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Jogador.png"));
-			bomba = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\Bomba.png"));
-			explosao = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\explosao.png"));
+			box = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\box.png"));
+			wall = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\wall.png"));
+			floor = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\floor.png"));
 			powerup = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\powerup.png"));
-			redPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVermelho.png"));
-			yellowPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAmarelo.png"));
-			greenPlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerVerde.png"));
-			bluePlayer = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\playerAzul.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -351,24 +323,20 @@ public class PanelJogo extends JPanel implements KeyListener {
 	@Override
 	public void keyReleased(KeyEvent e) {
 		bm.getJogadores().get(0).setEstadoJogador(EstadoJogador.PARADO);
-
 	}
 
 	@Override
 	public void keyTyped(KeyEvent e) {
 		// TODO Auto-generated method stub
-
 	}
 
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-
-//			tempo += 60;
-//			bm.updateBomba(60);			
-//			bm.verificaJogador(60);
+			// tempo += 60;
+			// bm.updateBomba(60);
+			// bm.verificaJogador(60);
 
 			tempo += UPDATERATE;
-
 
 			// for (int i = 0; i < animacoes.size(); i++) {
 			// if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
@@ -381,12 +349,19 @@ public class PanelJogo extends JPanel implements KeyListener {
 			// }
 			// }
 
-			for (int i = 0; i < bm.getJogadores().size(); i++) {
+			// UPDATE ANIMACOES BOMBAS
+			for (int i = 0; i < bm.getBombas().size(); i++) {
+				if (bm.getBombas().get(i).getEstado() == Peca.Estado.ACTIVO)
+					bm.getBombas().get(i).getBombAnim().update(UPDATERATE);
+			}
 
+			// UPDATE ANIMACOES JOGADORES
+			for (int i = 0; i < bm.getJogadores().size(); i++) {
 				if (bm.getJogadores().get(i).getEstado() == Peca.Estado.ACTIVO)
 					bm.getJogadores().get(i).getAnimation().update(UPDATERATE);
 			}
-			
+
+			repaint();
 
 			bm.updateBomba(UPDATERATE);
 			bm.verificaJogador(UPDATERATE);
