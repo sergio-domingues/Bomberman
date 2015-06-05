@@ -24,7 +24,6 @@ public class Gui {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
 				try {
-
 					Gui window = new Gui();
 					window.frame.setVisible(true);
 				} catch (Exception e) {
@@ -45,12 +44,12 @@ public class Gui {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-		Connection con = Connection.getInstance();
-
-		System.out.println("ENTRA!");
-		while (con.getStatus() != ServerStatus.RUNNING) {
-		}
-		System.out.println("SAI!");
+//		Connection con = Connection.getInstance();
+//
+//		System.out.println("ENTRA!");
+//		while (con.getStatus() != ServerStatus.RUNNING) {
+//		}
+//		System.out.println("SAI!");
 
 		frame = new JFrame();
 		frame.setResizable(false);
