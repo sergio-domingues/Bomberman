@@ -331,17 +331,17 @@ public class Bomberman {
 			switch (prob_pwup) {
 
 			case 0: {// speed pwup
-				SpeedPowerUp s = new SpeedPowerUp(x, y, 'P');
+				SpeedPowerUp s = new SpeedPowerUp(x, y, 'S');
 				this.powerUps.add(s);
 				return s;
 			}
 			case 1: {
-				ExtraBombPowerUp s = new ExtraBombPowerUp(x, y, 'P');
+				ExtraBombPowerUp s = new ExtraBombPowerUp(x, y, 'E');
 				this.powerUps.add(s);
 				return s;
 			}
 			case 2: {
-				IncRangePowerUp s = new IncRangePowerUp(x, y, 'P');
+				IncRangePowerUp s = new IncRangePowerUp(x, y, 'R');
 				this.powerUps.add(s);
 				return s;
 			}
