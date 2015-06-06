@@ -9,7 +9,7 @@ import java.util.Random;
 
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
-
+import bomberman.gui.SoundAnimation;
 import bomberman.logic.Builder.Difficulty;
 import bomberman.logic.Peca.Estado;
 
@@ -18,6 +18,8 @@ public class Bomberman {
 	private ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
 	private ArrayList<Bomba> bombas = new ArrayList<Bomba>();
 	private ArrayList<PowerUp> powerUps = new ArrayList<PowerUp>();
+	
+	private SoundAnimation bombSound, powerupSound, gameSound;
 
 	private int numPwUps = 3; // TODO ALTERAR PARA VALOR PRETENDIDO
 
@@ -48,18 +50,25 @@ public class Bomberman {
 	public Bomberman() {
 		mapa = new Mapa(15);
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
-
 		adicionarJogador();	
-//		adicionarJogador();
+		loadSounds();
+		gameSound.alteraVolume(100);
+		gameSound.play();
 	}
 
+	public void loadSounds(){		
+		 this.powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\powerupSound.mp3").toURI().toString());
+		 this.gameSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString()) ;		
+	}
+	
+	
 	//MUSICA
 	public void teste() throws URISyntaxException {
 
 		// System.out.print(System.getProperty("user.dir")+"\\resources\\sound.wav");
 		new javafx.embed.swing.JFXPanel();
 		
-		String s = new File(System.getProperty("user.dir") + "\\resources\\Bomb.mp3").toURI().toString();
+		String s = new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString();
 		MediaPlayer player = new MediaPlayer(new Media(s));
 		//player.setVolume(0.8);
 		player.play();
@@ -161,7 +170,7 @@ public class Bomberman {
 
 		if (flag == 0)
 			return;
-
+		
 		// CIMA
 		for (int i = 0; i <= b.getRaio(); i++) {
 			if ((int) b.getPos().getY() - i < 0 || mapa.getTab()[(int) b.getPos().getY() - i][(int) b.getPos().getX()] == 'X') {
@@ -275,6 +284,8 @@ public class Bomberman {
 					j.addBomba();
 				}
 
+				this.powerupSound.getPlayer().stop();
+				this.powerupSound.getPlayer().play();
 				this.mapa.setChar((int) p.getPos().getX(), (int) p.getPos().getY(), ' ');
 				it.remove(); // remove pwup
 				return true;

@@ -16,6 +16,7 @@ public class Gui {
 	private JPanel jogo;
 
 	private Bomberman bm = new Bomberman();
+	
 
 	/**
 	 * Launch the application.
@@ -44,8 +45,7 @@ public class Gui {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
-//		Connection con = Connection.getInstance();
-//
+//		Connection con = Connection.getInstance();//
 //		System.out.println("ENTRA!");
 //		while (con.getStatus() != ServerStatus.RUNNING) {
 //		}
@@ -58,10 +58,9 @@ public class Gui {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		jogo = new PanelJogo(bm);
-
+		
 		jogo.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());
 
 		frame.getContentPane().add(jogo);
 	}
-
 }

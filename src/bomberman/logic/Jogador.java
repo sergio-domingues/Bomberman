@@ -16,6 +16,7 @@ public class Jogador extends Peca {
 	};
 
 	private Animation.ColorPlayer color;
+
 	public Animation.ColorPlayer getColor() {
 		return color;
 	}
@@ -144,6 +145,10 @@ public class Jogador extends Peca {
 		return id;
 	}
 
+	public boolean checkCollidePowerup(int x, int y, Mapa map) {
+		return map.getTab()[y][x] == 'E' || map.getTab()[y][x] == 'S' || map.getTab()[y][x] == 'R';
+	}
+
 	public void move(Direcao d, Mapa mapa) {
 
 		double x, y, deltax, deltay;// , deltay_ceil;
@@ -159,15 +164,15 @@ public class Jogador extends Peca {
 			if (deltax == 0) { // coincide com inicio da celula
 				if ((int) (y - velocidade) > 0) {
 					if (mapa.getTab()[(int) Math.floor(y - velocidade)][(int) x] == ' '
-							|| mapa.getTab()[(int) Math.floor(y - velocidade)][(int) x] == 'P') {
+							|| checkCollidePowerup((int) x, (int) Math.floor(y - velocidade), mapa)) {
 						this.pos.setY(y - velocidade);
 					}
 				}
 			} else if (deltax < 0.5 && deltax > 0.0
-					&& (mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ' || mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == 'P'))
+					&& (mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ' ||  checkCollidePowerup((int) Math.floor(x), (int) (y - 1), mapa)))
 				this.move(Direcao.ESQUERDA, mapa);
 			else if (deltax > 0.5 && deltax < 1.0
-					&& (mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ' || mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' '))
+					&& (mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ' ||checkCollidePowerup((int) Math.ceil(x), (int) (y - 1), mapa))) //mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' '))
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.CIMA;
@@ -176,15 +181,15 @@ public class Jogador extends Peca {
 			if (deltax == 0) {
 				if ((int) (y + velocidade) < mapa.getTamanho()) {
 					if (mapa.getTab()[(int) Math.ceil(y + velocidade)][(int) x] == ' '
-							|| mapa.getTab()[(int) Math.ceil(y + velocidade)][(int) x] == 'P') {
+							|| checkCollidePowerup((int) x, (int) Math.ceil(y + velocidade), mapa)) {
 						this.pos.setY(y + velocidade);
 					}
 				}
 			} else if (deltax > 0.0 && deltax < 0.5
-					&& (mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == ' ' || mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == 'P'))
+					&& (mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == ' ' || checkCollidePowerup((int) Math.floor(x), (int) (y + 1), mapa)))
 				this.move(Direcao.ESQUERDA, mapa);
 			else if (deltax > 0.5 && deltax < 1.0
-					&& (mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' ' || mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == 'P'))
+					&& (mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' ' || checkCollidePowerup((int)  Math.ceil(x), (int) (y + 1), mapa)))
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.BAIXO;
@@ -193,15 +198,15 @@ public class Jogador extends Peca {
 			if (deltay == 0) {
 				if ((int) (x - velocidade) > 0) {
 					if (mapa.getTab()[(int) y][(int) Math.floor(x - velocidade)] == ' '
-							|| mapa.getTab()[(int) y][(int) Math.floor(x - velocidade)] == 'P') {
+							|| checkCollidePowerup((int) Math.floor(x - velocidade), (int) y, mapa)) {
 						this.pos.setX(x - velocidade);
 					}
 				}
 			} else if (deltay > 0.0 && deltay < 0.5
-					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' ' || mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == 'P'))
+					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' ' || checkCollidePowerup((int)(x - 1), (int) Math.floor(y), mapa)))
 				this.move(Direcao.CIMA, mapa);
 			else if (deltay > 0.5 && deltay < 1.0
-					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' ' || mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == 'P'))
+					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' ' || checkCollidePowerup((int)(x - 1), (int) Math.ceil(y), mapa)))
 				this.move(Direcao.BAIXO, mapa);
 
 			this.ultimaDirecao = Direcao.ESQUERDA;
@@ -210,15 +215,15 @@ public class Jogador extends Peca {
 			if (deltay == 0) {
 				if ((int) (x + velocidade) < mapa.getTamanho()) {
 					if (mapa.getTab()[(int) y][(int) Math.ceil(x + velocidade)] == ' '
-							|| mapa.getTab()[(int) y][(int) Math.ceil(x + velocidade)] == 'P') {
+							|| checkCollidePowerup((int) Math.ceil(x + velocidade), (int) y, mapa)) {
 						this.pos.setX(x + velocidade);
 					}
 				}
 			} else if (deltay > 0.0 && deltay < 0.5
-					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' ' || mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == 'P'))
+					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' ' || checkCollidePowerup((int)  (x + 1), (int) Math.floor(y), mapa)))
 				this.move(Direcao.CIMA, mapa);
 			else if (deltay > 0.5 && deltay < 1.0
-					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' ' || mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == 'P'))
+					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' ' || checkCollidePowerup((int)  (x + 1), (int) Math.ceil(y), mapa)))
 				this.move(Direcao.BAIXO, mapa);
 
 			this.ultimaDirecao = Direcao.DIREITA;
