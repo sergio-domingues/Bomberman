@@ -2,7 +2,6 @@ package bomberman.gui;
 
 import java.awt.Color;
 import java.awt.EventQueue;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Image;
@@ -15,30 +14,25 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
-import javax.swing.BoxLayout;
-import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
-import bomberman.connection.Connection;
-import bomberman.connection.Connection.ServerStatus;
 import bomberman.logic.Bomberman;
 
 public class Gui {
 
 	public JFrame frame;
 	private JPanel jogo;
-	private int nrPlayers = 2;
+	private int nrPlayers = 1;
 	public int volume = 50;
 	private static Gui instance = null;
-
+	private SoundAnimation powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString());
 	private Bomberman bm = new Bomberman();
 
 	/**
@@ -255,6 +249,7 @@ public class Gui {
 		for (int i = 0; i < nrPlayers; i++) {
 			bm.adicionarJogador();
 		}
+		this.powerupSound.play();
 
 		this.jogo = new PanelJogo(bm, this.frame);
 		this.frame.getContentPane().add(this.jogo);

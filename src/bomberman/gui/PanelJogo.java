@@ -48,8 +48,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 	public PanelJogo(Bomberman bm, JFrame frame) {
 		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho() + 20, 50 * bm.getMapa().getTamanho() + 20);
 		setFocusable(true);
-		// this.setMinimumSize(new Dimension(TILESIZE *
-		// bm.getMapa().getTamanho(), TILESIZE * bm.getMapa().getTamanho()));
 		this.loadImages();
 		this.setLayout(new FlowLayout());
 		this.setVisible(true);
@@ -58,19 +56,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 		timer = new Timer(UPDATERATE, timerListener);
 		timer.start();
 
-		// System.out.println(bm.getJogadores().size());
-
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
-
 			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
 		}
-
-		// Bomberman.imprimeMapa(bm.getMapa().getTab(),
-		// bm.getMapa().getTamanho());
 	}
 
 	// converte indice dir para TIPO DIRECCAO correspondente
-
 	public int parseDirection(Jogador.Direcao dir) {
 
 		if (dir == Jogador.Direcao.BAIXO)
@@ -176,7 +167,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			dx1 = bm.getJogadores().get(i).getPos().getX();
 			dy1 = bm.getJogadores().get(i).getPos().getY();
 
-			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.30);
+			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.20);
 		}
 
 		// impressao bombas
@@ -333,19 +324,24 @@ public class PanelJogo extends JPanel implements KeyListener {
 	}
 
 	ActionListener timerListener = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			// tempo += 60;
-			// bm.updateBomba(60);
-			// bm.verificaJogador(60);
 
+		public void actionPerformed(ActionEvent e) {
 			tempo += UPDATERATE;
+
 
 			for (int i = 0; i < animacoes.size(); i++) {
 				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
-					bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.MOVER);
+
+					if (bm.getJogadores().get(i).getEstadoJogador() == Jogador.EstadoJogador.PARADO)
+						bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.MOVER);
+
 					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).getDir());
+					bm.checkPowerUp(bm.getJogadores().get(i));
+
 				} else if (animacoes.get(i).getNextInstruction() == Instruction.STOP) {
-					bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.PARADO);
+					
+					if (bm.getJogadores().get(i).getEstadoJogador() != Jogador.EstadoJogador.PARADO)
+						bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.PARADO);					
 				}
 				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
 					bm.colocarBomba(bm.getJogadores().get(i));

@@ -83,12 +83,12 @@ public class Connection extends Thread {
 
 		System.out.println(this.status);
 		while (status == ServerStatus.RUNNING) {
-			for (int i = 0; i < maxConnection; i++) {
-				if (!connections[i].isConnected()) {
-					connections[i] = null;
-					nrConnections--;
-				}
-			}
+//			for (int i = 0; i < maxConnection; i++) {
+//				if (!connections[i].isConnected()) {
+//					connections[i] = null;
+//					nrConnections--;
+//				}
+//			}
 
 		}
 		System.err.println("Server Stopped.");

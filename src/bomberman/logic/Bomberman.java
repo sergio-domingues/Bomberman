@@ -19,9 +19,10 @@ public class Bomberman {
 	private ArrayList<Bomba> bombas = new ArrayList<Bomba>();
 	private ArrayList<PowerUp> powerUps = new ArrayList<PowerUp>();
 
-	private SoundAnimation bombSound, powerupSound, gameSound;
+	private SoundAnimation bombSound, powerupSound;
 
 	private int numPwUps = 3; // TODO ALTERAR PARA VALOR PRETENDIDO
+	private boolean gameover = false;
 
 	public int getNumPwUps() {
 		return numPwUps;
@@ -53,13 +54,10 @@ public class Bomberman {
 
 		// adicionarJogador();
 		loadSounds();
-		gameSound.alteraVolume(100);
-		gameSound.play();
 	}
 
 	public void loadSounds() {
 		this.powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\powerupSound.mp3").toURI().toString());
-		this.gameSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString());
 	}
 
 	// MUSICA
@@ -72,17 +70,6 @@ public class Bomberman {
 		MediaPlayer player = new MediaPlayer(new Media(s));
 		// player.setVolume(0.8);
 		player.play();
-
-		// try{
-		// AudioInputStream audioInputStream =
-		// AudioSystem.getAudioInputStream(this.getClass().getResource("/resources/sound.wav"));
-		//
-		// Clip clip = AudioSystem.getClip();
-		// clip.open(audioInputStream);
-		// clip.start( );
-		// }
-		// catch(Exception ex)
-		// {System.out.println("lol"); }
 	}
 
 	public static void main(String[] args) throws IOException, URISyntaxException {
@@ -91,32 +78,22 @@ public class Bomberman {
 
 		Bomberman bmb = new Bomberman();
 		bmb.teste();
-		// open the sound file as a Java input stream
-		// String songFile =
-		// System.getProperty("user.dir")+"\\resources\\sound.wav";
-		// InputStream in;
-		// AudioStream audioStream;
-		//
-		// in = new FileInputStream(songFile);
-		//
-		// audioStream = new AudioStream(in);
-		// // play the audio clip with the audioplayer class
-		// AudioPlayer.player.start(audioStream);
-
 	}
 
 	public static void imprimeMapa(char[][] tab, int tamanho) {
 		for (int i = 0; i < tamanho; i++) {
-
 			for (int j = 0; j < tamanho; j++) {
 				System.out.print(tab[i][j] + " ");
 			}
-
 			System.out.print("\n");
 		}
 	}
 
 	public void moveJogador(Jogador j, Jogador.Direcao dir) {
+		
+		if(j.getEstado() == Peca.Estado.INATIVO)
+			return;
+		
 		j.move(dir, mapa);
 	}
 
@@ -146,6 +123,10 @@ public class Bomberman {
 	}
 
 	public void colocarBomba(Jogador j) {
+		
+		if(j.getEstado() == Peca.Estado.INATIVO)
+			return;
+		
 		if (j.getNrBombas() == 0) {
 			return;
 		} else {
@@ -251,19 +232,23 @@ public class Bomberman {
 			return;
 
 		// verifica colisoes com a bomba
-		for (int i = 0; i < jogadores.size(); i++) {
-			if (jogadores.get(i).getEstado() != Peca.Estado.ACTIVO)
+		for (Iterator<Jogador> it = jogadores.iterator(); it.hasNext();) {
+			
+			Jogador j = it.next();
+			
+			if (j.getEstado() != Peca.Estado.ACTIVO)
 				continue;
 
-			if (jogadores.get(i).ver(b, mapa, b.getRaio()) && jogadores.get(i).getEstadoVuln() == Jogador.EstadoVulnerabilidade.VULNERAVEL) {
+			if (j.ver(b, mapa, b.getRaio()) && j.getEstadoVuln() == Jogador.EstadoVulnerabilidade.VULNERAVEL) {
 
-				jogadores.get(i).decVidas();
-				jogadores.get(i).setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
+				j.decVidas();
+				j.setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
 
-				System.out.println(jogadores.get(i).getVidas());
+				System.out.println(j.getVidas());
 
-				if (jogadores.get(i).getVidas() == 0) {
-					jogadores.get(i).setEstado(Peca.Estado.INATIVO);
+				if (j.getVidas() == 0) {
+					j.setEstado(Peca.Estado.INATIVO);	
+					//verificaEstadoJogo();
 				}
 			}
 		}
@@ -276,6 +261,8 @@ public class Bomberman {
 			PowerUp p = it.next();
 
 			if (j.colide(p)) {
+				System.out.println("pwup");
+				
 				if (p.getClass() == SpeedPowerUp.class) {
 					j.updateVelocidade();
 				} else if (p.getClass() == IncRangePowerUp.class) {
@@ -285,6 +272,7 @@ public class Bomberman {
 				}
 
 				this.powerupSound.getPlayer().stop();
+				this.powerupSound.getPlayer().setVolume(0.5);
 				this.powerupSound.getPlayer().play();
 				this.mapa.setChar((int) p.getPos().getX(), (int) p.getPos().getY(), ' ');
 				it.remove(); // remove pwup
@@ -296,38 +284,41 @@ public class Bomberman {
 
 	public void verificaJogador(int dec) {
 
-		for (int i = 0; i < this.jogadores.size(); i++) {
+		for (Iterator<Jogador> it = this.jogadores.iterator(); it.hasNext();) {
 
-			if (this.jogadores.get(i).getEstado() == Peca.Estado.INATIVO)
+			Jogador j = it.next();
+			
+			if (j.getEstado() == Peca.Estado.INATIVO)
 				continue;
 
-			if (this.jogadores.get(i).getEstadoVuln() == Jogador.EstadoVulnerabilidade.VULNERAVEL) {
+			if (j.getEstadoVuln() == Jogador.EstadoVulnerabilidade.VULNERAVEL) {
 
-				for (int j = 0; j < this.bombas.size(); j++) {
+				for (int k = 0; k < this.bombas.size(); k++) {
 
-					if (this.bombas.get(j).getEstado() != Peca.Estado.ACTIVO)
+					if (this.bombas.get(k).getEstado() != Peca.Estado.ACTIVO)
 						continue;
 
-					if (this.bombas.get(j).getEstadoBomba() != Bomba.EstadoBomba.EXPLODINDO)
+					if (this.bombas.get(k).getEstadoBomba() != Bomba.EstadoBomba.EXPLODINDO)
 						continue;
 
-					if (this.jogadores.get(i).ver(this.bombas.get(j), this.mapa, this.bombas.get(j).getRaio())) {
+					if (j.ver(this.bombas.get(k), this.mapa, this.bombas.get(k).getRaio())) {
 
-						System.out.println(this.jogadores.get(i).getEstadoVuln());
+						System.out.println(j.getEstadoVuln());
 
-						this.jogadores.get(i).decVidas();
-						this.jogadores.get(i).setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
+						j.decVidas();
+						j.setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
 
-						if (this.jogadores.get(i).getVidas() == 0) {
+						if (j.getVidas() == 0) {
 							System.out.println("morreu");
-							jogadores.get(i).setEstado(Peca.Estado.INATIVO);
+							j.setEstado(Peca.Estado.INATIVO);
+							//verificaEstadoJogo();
 						}
 					}
 				}
 			}
 
 			else
-				this.jogadores.get(i).updateTempoJogador(dec);
+				j.updateTempoJogador(dec);
 		}
 	}
 
@@ -371,4 +362,21 @@ public class Bomberman {
 	public void setPowerUps(ArrayList<PowerUp> powerUps) {
 		this.powerUps = powerUps;
 	}
+
+	public void verificaEstadoJogo(){
+		
+		int counter = 0;
+		
+		for(int i = 0; i < this.jogadores.size(); i++){			
+			if(this.jogadores.get(i).getEstado() == Peca.Estado.ACTIVO)				
+				counter++;							
+		}
+		
+		//last player alive
+		if(counter == 1){			
+			gameover  = true;
+			System.exit(1);
+		}
+	}
+
 }
