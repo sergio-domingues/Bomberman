@@ -49,19 +49,19 @@ public class Bomberman {
 		mapa = new Mapa(15);
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
 
-		adicionarJogador();	
-//		adicionarJogador();
+		// adicionarJogador();
+		// adicionarJogador();
 	}
 
-	//MUSICA
+	// MUSICA
 	public void teste() throws URISyntaxException {
 
 		// System.out.print(System.getProperty("user.dir")+"\\resources\\sound.wav");
 		new javafx.embed.swing.JFXPanel();
-		
+
 		String s = new File(System.getProperty("user.dir") + "\\resources\\Bomb.mp3").toURI().toString();
 		MediaPlayer player = new MediaPlayer(new Media(s));
-		//player.setVolume(0.8);
+		// player.setVolume(0.8);
 		player.play();
 
 		// try{
@@ -111,25 +111,25 @@ public class Bomberman {
 		j.move(dir, mapa);
 	}
 
-	void adicionarJogador() {
+	public void adicionarJogador() {
 		Jogador j;
 
 		if (Jogador.getNextId() > 4)
 			return;
 
-		if (Jogador.getNextId() == 1) { 
-			//canto sup esq
+		if (Jogador.getNextId() == 1) {
+			// canto sup esq
 			j = new Jogador(1, 1, '1');
-			jogadores.add(j);			
+			jogadores.add(j);
 		} else if (Jogador.getNextId() == 2) {
-			//canto inf dir
+			// canto inf dir
 			j = new Jogador(mapa.getTamanho() - 2, mapa.getTamanho() - 2, '2');
-			jogadores.add(j);			
+			jogadores.add(j);
 		} else if (Jogador.getNextId() == 3) {
-			//canto inf esq
+			// canto inf esq
 			j = new Jogador(1, mapa.getTamanho() - 2, '3');
 			jogadores.add(j);
-			//canto sup dir
+			// canto sup dir
 		} else if (Jogador.getNextId() == 4) {
 			j = new Jogador(mapa.getTamanho() - 2, 1, '4');
 			jogadores.add(j);

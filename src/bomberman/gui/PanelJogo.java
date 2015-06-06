@@ -15,9 +15,12 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import bomberman.connection.Connection;
+import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
 import bomberman.logic.Bomberman;
 import bomberman.logic.Jogador;
@@ -42,9 +45,11 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private BufferedImage box, wall, floor, powerup;
 	private Image redPlayer, yellowPlayer, bluePlayer, greenPlayer;
 
-	public PanelJogo(Bomberman bm) {
+	public PanelJogo(Bomberman bm, JFrame frame) {
+		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho() + 20, 50 * bm.getMapa().getTamanho() + 20);
 		setFocusable(true);
-		this.setMinimumSize(new Dimension(TILESIZE * bm.getMapa().getTamanho(), TILESIZE * bm.getMapa().getTamanho()));
+		// this.setMinimumSize(new Dimension(TILESIZE *
+		// bm.getMapa().getTamanho(), TILESIZE * bm.getMapa().getTamanho()));
 		this.loadImages();
 		this.setLayout(new FlowLayout());
 		this.setVisible(true);
@@ -53,21 +58,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 		timer = new Timer(UPDATERATE, timerListener);
 		timer.start();
 
-		System.out.println(bm.getJogadores().size());
+		// System.out.println(bm.getJogadores().size());
 
-		// for (int i = 0; i < bm.getJogadores().size(); i++) {
-		//
-		// bm.getJogadores().get(i).setAnimation(new
-		// PlayerMovingAnim(parseColor(color), parseDirection(dir)));
-		// color++;
-		// if (dir == 2)
-		// dir = 1;
-		// else
-		// dir = 2;
-		//
-		// // animacoes.add(new
-		// // AnimJogador(Connection.getInstance().getConnections()[i]));
-		// }
+		for (int i = 0; i < bm.getJogadores().size(); i++) {
+
+			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
+		}
 
 		// Bomberman.imprimeMapa(bm.getMapa().getTab(),
 		// bm.getMapa().getTamanho());
@@ -338,16 +334,18 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 			tempo += UPDATERATE;
 
-			// for (int i = 0; i < animacoes.size(); i++) {
-			// if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
-			// //bm.moveJogador(bm.getJogadores().get(i),
-			// animacoes.get(i).getDir());
-			// }
-			// if (animacoes.get(i).getNextInstruction() ==
-			// Instruction.PLANTBOMB) {
-			// bm.colocarBomba(bm.getJogadores().get(i));
-			// }
-			// }
+			for (int i = 0; i < animacoes.size(); i++) {
+				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
+					bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.MOVER);
+					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).getDir());
+				} else if (animacoes.get(i).getNextInstruction() == Instruction.STOP) {
+					bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.PARADO);
+				}
+				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
+					bm.colocarBomba(bm.getJogadores().get(i));
+				}
+
+			}
 
 			// UPDATE ANIMACOES BOMBAS
 			for (int i = 0; i < bm.getBombas().size(); i++) {
