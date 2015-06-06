@@ -75,6 +75,7 @@ public class Gui {
 	 * Initialize the contents of the frame.
 	 */
 	private void initialize() {
+
 		frame = new JFrame();
 		frame.setResizable(false);
 		frame.setBounds(100, 100, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());

@@ -3,6 +3,7 @@ package bomberman.logic;
 import bomberman.gui.AnimBomb;
 import bomberman.gui.AnimExplosion;
 import bomberman.gui.Animation;
+import bomberman.gui.SoundAnimation;
 
 public class Bomba extends Peca {
 	public static enum EstadoBomba {
@@ -16,7 +17,6 @@ public class Bomba extends Peca {
 	private int raio;
 	private EstadoBomba estadoBomba;
 	private Animation bombSetAnim;
-	//private AnimExplosion bomExplosionAnim;
 
 	Jogador jogador;
 
@@ -77,5 +77,4 @@ public class Bomba extends Peca {
 	public void setBombAnim(Animation bombAnim) {
 		this.bombSetAnim = bombAnim;
 	}
-
 }

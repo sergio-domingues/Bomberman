@@ -38,12 +38,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private Timer timer;
 	private double tempo = 0;
 	private int dir = 2, color = 0;
+	private boolean playBackMusic = true;
 
 	private static final int UPDATERATE = 70;// tempo de refresh objectos
 	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
-	private BufferedImage box, wall, floor, powerup;
-	private Image redPlayer, yellowPlayer, bluePlayer, greenPlayer;
+	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, pwup;
 
 	public PanelJogo(Bomberman bm, JFrame frame) {
 		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho() + 20, 50 * bm.getMapa().getTamanho() + 20);
@@ -137,11 +137,18 @@ public class PanelJogo extends JPanel implements KeyListener {
 					img = floor;
 				} else if (bm.getMapa().getTab()[i][j] == 'W') {
 					img = box;
-				}
+				} else if (bm.getMapa().getTab()[i][j] == 'E')
+					img = powerupBomb;
+				else if (bm.getMapa().getTab()[i][j] == 'R')
+					img = powerupRange;
+				else if (bm.getMapa().getTab()[i][j] == 'S')
+					img = powerupSpeed;
 
 				xi = j * TILESIZE;
 				yi = i * TILESIZE;
 
+				// TODO TIRAR ESTA INSTRUCAO PARA TORNAR ISTO MAIS EFICIENTE
+				g.drawImage(floor, xi, yi, TILESIZE, TILESIZE, null);
 				g.drawImage(img, xi, yi, TILESIZE, TILESIZE, null);
 			}
 		}
@@ -150,26 +157,14 @@ public class PanelJogo extends JPanel implements KeyListener {
 		for (int i = 0; i < bm.getBombas().size(); i++) {
 			if (bm.getBombas().get(i).getEstadoBomba() != EstadoBomba.EXPLODINDO) {
 				double x, y;
+
 				x = bm.getBombas().get(i).getPos().getX();
 				y = bm.getBombas().get(i).getPos().getY();
-				// g.drawImage(bomba, (int)
-				// (bm.getBombas().get(i).getPos().getX() * TILESIZE),
-				// (int) (bm.getBombas().get(i).getPos().getY() * TILESIZE),
-				// TILESIZE, TILESIZE, null);
+
 				bm.getBombas().get(i).getBombAnim().render(g, x, y);
 			}
 		}
 
-		// impressao pwups
-		for (int i = 0; i < bm.getPowerUps().size(); i++) {
-			// TODO SWITCH CASE PARA VER CONFORME O POWERUP A IMAGEM QUE DEVE
-			// SER IMPRESSA
-
-			g.drawImage(powerup, (int) (bm.getPowerUps().get(i).getPos().getX() * TILESIZE),
-					(int) (bm.getPowerUps().get(i).getPos().getY() * TILESIZE), TILESIZE, TILESIZE, null);
-		}
-
-		// int dx1, dx2, dy1, dy2, sx1, sx2, sy1, sy2, dir, move;
 		double dx1, dy1;
 
 		// impressao jogador
@@ -181,7 +176,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			dx1 = bm.getJogadores().get(i).getPos().getX();
 			dy1 = bm.getJogadores().get(i).getPos().getY();
 
-			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1);
+			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.30);
 		}
 
 		// impressao bombas
@@ -254,6 +249,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 				}
 			}
 		}
+		// bm.imprimeMapa(bm.getMapa().getTab(), bm.getMapa().getTamanho());
 	}
 
 	public void loadImages() {
@@ -261,7 +257,9 @@ public class PanelJogo extends JPanel implements KeyListener {
 			box = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\box.png"));
 			wall = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\wall.png"));
 			floor = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\floor.png"));
-			powerup = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\powerup.png"));
+			powerupBomb = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\bombpwup.png"));
+			powerupRange = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\rangepwup.png"));
+			powerupSpeed = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\speedpwup.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -326,6 +324,14 @@ public class PanelJogo extends JPanel implements KeyListener {
 		// TODO Auto-generated method stub
 	}
 
+	public boolean isPlayBackMusic() {
+		return playBackMusic;
+	}
+
+	public void setPlayBackMusic(boolean playBackMusic) {
+		this.playBackMusic = playBackMusic;
+	}
+
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
 			// tempo += 60;
@@ -358,8 +364,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 				if (bm.getJogadores().get(i).getEstado() == Peca.Estado.ACTIVO)
 					bm.getJogadores().get(i).getAnimation().update(UPDATERATE);
 			}
-
-			repaint();
 
 			bm.updateBomba(UPDATERATE);
 			bm.verificaJogador(UPDATERATE);

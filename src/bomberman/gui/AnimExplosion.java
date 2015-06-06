@@ -15,11 +15,13 @@ public class AnimExplosion implements Animation {
 	private Image sprite;
 	private int lastIndex = 0;
 	private static final int TILESIZE = PanelJogo.TILESIZE;
-
+	private SoundAnimation player = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\Bomb.mp3").toURI().toString());
 	
 	public AnimExplosion(ColorPlayer color) {
 		tempo = 0;
 		changeColor(color);
+		player.play();
+		player.getPlayer().setVolume(0.1);
 	}
 
 	@Override
@@ -68,6 +70,14 @@ public class AnimExplosion implements Animation {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public SoundAnimation getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(SoundAnimation player) {
+		this.player = player;
 	}
 
 }
