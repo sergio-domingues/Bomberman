@@ -9,9 +9,11 @@ import java.net.UnknownHostException;
 public class Connection extends Thread {
 	protected static Connection instance = null;
 	protected static int maxConnection = 2;
+	protected static String hostIp;
 
 	protected ServerSocket serverSocket;
 	protected ConnectionId connections[];
+	protected int nrConnections = 0;
 
 	public enum ServerStatus {
 		GETTINGCLIENT, RUNNING, STOPPED
@@ -25,14 +27,15 @@ public class Connection extends Thread {
 	public Connection() {
 		connections = new ConnectionId[maxConnection];
 		status = ServerStatus.GETTINGCLIENT;
-		
+
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		try {
-			System.out.println(InetAddress.getLocalHost());
+			hostIp = InetAddress.getLocalHost().toString();
+			System.out.println(hostIp);
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
 		}
@@ -55,6 +58,7 @@ public class Connection extends Thread {
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
 						connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
 						new Thread(connections[ConnectionId.nextId - 2]).start();
+						nrConnections++;
 
 					}
 				} catch (IOException e) {
@@ -64,7 +68,7 @@ public class Connection extends Thread {
 			} else if (ConnectionId.nextId > maxConnection + 1) {
 				System.err.println("Maximo de CLientes Atingido");
 			}
-			
+
 			for (int i = 0; i < maxConnection; i++) {
 				if (!connections[i].isConnected()) {
 					break;
@@ -82,9 +86,10 @@ public class Connection extends Thread {
 			for (int i = 0; i < maxConnection; i++) {
 				if (!connections[i].isConnected()) {
 					connections[i] = null;
+					nrConnections--;
 				}
 			}
-		
+
 		}
 		System.err.println("Server Stopped.");
 
@@ -131,6 +136,14 @@ public class Connection extends Thread {
 
 	synchronized public ServerStatus getStatus() {
 		return status;
+	}
+
+	synchronized public int getNrConnections() {
+		return nrConnections;
+	}
+
+	public static String getHostIp() {
+		return hostIp;
 	}
 
 }
