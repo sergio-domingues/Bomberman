@@ -1,9 +1,7 @@
 package bomberman.gui;
 
-import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
-import java.awt.Image;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
@@ -43,10 +41,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private static final int UPDATERATE = 70;// tempo de refresh objectos
 	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
-	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, pwup;
+	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, pwup, heart;
 
 	public PanelJogo(Bomberman bm, JFrame frame) {
-		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho() + 20, 50 * bm.getMapa().getTamanho() + 20);
+		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho() + 35);
+
+		frame.setBounds(this.getBounds());
 		setFocusable(true);
 		this.loadImages();
 		this.setLayout(new FlowLayout());
@@ -59,6 +59,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
 			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
 		}
+
 	}
 
 	// converte indice dir para TIPO DIRECCAO correspondente
@@ -168,6 +169,11 @@ public class PanelJogo extends JPanel implements KeyListener {
 			dy1 = bm.getJogadores().get(i).getPos().getY();
 
 			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.20);
+
+			for (int vidas = 0; vidas < bm.getJogadores().get(i).getVidas(); vidas++) {
+				g.drawImage(heart, (int) (dx1 * TILESIZE), (int) (dy1 * TILESIZE) + vidas * 8, (int) (dx1 * TILESIZE + 8),
+						(int) (dy1 * TILESIZE + 8 + vidas * 8), 0, 0, heart.getWidth(null), heart.getHeight(null), null);
+			}
 		}
 
 		// impressao bombas
@@ -251,6 +257,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			powerupBomb = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\bombpwup.png"));
 			powerupRange = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\rangepwup.png"));
 			powerupSpeed = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\speedpwup.png"));
+			heart = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\heart.png"));
 
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -328,7 +335,6 @@ public class PanelJogo extends JPanel implements KeyListener {
 		public void actionPerformed(ActionEvent e) {
 			tempo += UPDATERATE;
 
-
 			for (int i = 0; i < animacoes.size(); i++) {
 				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
 
@@ -339,9 +345,9 @@ public class PanelJogo extends JPanel implements KeyListener {
 					bm.checkPowerUp(bm.getJogadores().get(i));
 
 				} else if (animacoes.get(i).getNextInstruction() == Instruction.STOP) {
-					
+
 					if (bm.getJogadores().get(i).getEstadoJogador() != Jogador.EstadoJogador.PARADO)
-						bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.PARADO);					
+						bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.PARADO);
 				}
 				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
 					bm.colocarBomba(bm.getJogadores().get(i));

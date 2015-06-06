@@ -1,5 +1,7 @@
 package bomberman.gui;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.event.ActionEvent;
@@ -19,8 +21,11 @@ import bomberman.connection.Connection;
 public class ConnectPlayer extends JPanel {
 	private Image vermelho, verde, amarelo, azul, disconnected;
 	private boolean comecouJogo = false;
+	private boolean countDown;
+	private long tempo = 3500;// 3 segundos
 	private int nrPlayersMax;
 	private JFrame frame;
+	private JLabel tempoLabel = new JLabel();
 
 	public ConnectPlayer(int nrPlayers, JFrame frame) {
 
@@ -49,13 +54,18 @@ public class ConnectPlayer extends JPanel {
 			player.setBounds(50 + (i % 2) * 400, 150 + (int) (i / 2) * 300, 100, 50);
 			this.add(player);
 		}
-
+		tempoLabel = new JLabel();
+		tempoLabel.setBounds(frame.getWidth() / 2 - 150, frame.getHeight() / 2 - 250, 150, 150);
+		tempoLabel.setFont(new Font("Calibri", Font.BOLD, 150));
+		tempoLabel.setForeground(Color.RED);
+		this.add(tempoLabel);
 		this.add(ip);
 		this.add(nrConnectsLabel);
 	}
 
 	@Override
 	protected void paintComponent(Graphics g) {
+
 		super.paintComponent(g);
 
 		// TODO ACERTAR FUNCAO
@@ -105,11 +115,18 @@ public class ConnectPlayer extends JPanel {
 
 	ActionListener timerListener = new ActionListener() {
 		public void actionPerformed(ActionEvent e) {
-			repaint();
-			if (Connection.getInstance().getNrConnections() == nrPlayersMax && comecouJogo == false) {
+			if (countDown) {
+				tempo = tempo - 500;
+				tempoLabel.setText(Long.toString(tempo / 1000));
+			} else if (Connection.getInstance().getNrConnections() == nrPlayersMax) {
+				countDown = true;
+			}
+			if (tempo <= 0 && comecouJogo == false) {
 				Gui.getInstance().startGame();
 				comecouJogo = true;
 			}
+			repaint();
 		}
+
 	};
 }

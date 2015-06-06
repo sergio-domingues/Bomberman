@@ -29,7 +29,7 @@ public class Gui {
 
 	public JFrame frame;
 	private JPanel jogo;
-	private int nrPlayers = 1;
+	private int nrPlayers = 2;
 	public int volume = 50;
 	private static Gui instance = null;
 	private SoundAnimation powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString());
@@ -77,11 +77,6 @@ public class Gui {
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		initMainMenu();
-
-		// jogo = new PanelJogo(bm);
-
-		// jogo.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 *
-		// bm.getMapa().getTamanho());
 
 		frame.getContentPane().add(jogo);
 		frame.repaint();
