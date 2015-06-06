@@ -52,7 +52,8 @@ public class Bomberman {
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
 		adicionarJogador();	
 		loadSounds();
-		gameSound.alteraVolume(100);
+		//gameSound.alteraVolume(100);
+		gameSound.getPlayer().stop();
 		gameSound.play();
 	}
 

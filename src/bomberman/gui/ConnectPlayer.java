@@ -68,6 +68,7 @@ public class ConnectPlayer extends JPanel {
 				g.drawImage(azul, dx1, dy1, dx2, dy2, sx1, sy1, sx2, sy2, null);
 			}
 		}
+		repaint();
 	}
 
 	private void loadImagens() {
