@@ -169,10 +169,10 @@ public class Jogador extends Peca {
 					}
 				}
 			} else if (deltax < 0.5 && deltax > 0.0
-					&& (mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ' ||  checkCollidePowerup((int) Math.floor(x), (int) (y - 1), mapa)))
+					&& (mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ' || checkCollidePowerup((int) Math.floor(x), (int) (y - 1), mapa)))
 				this.move(Direcao.ESQUERDA, mapa);
 			else if (deltax > 0.5 && deltax < 1.0
-					&& (mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ' ||checkCollidePowerup((int) Math.ceil(x), (int) (y - 1), mapa))) //mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' '))
+					&& (mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ' || checkCollidePowerup((int) Math.ceil(x), (int) (y - 1), mapa)))
 				this.move(Direcao.DIREITA, mapa);
 
 			this.ultimaDirecao = Direcao.CIMA;
