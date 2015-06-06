@@ -36,7 +36,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private double tempo = 0;
 	private int dir = 2, color = 0;
 	private boolean playBackMusic = true;
-	
+
 	private static final int UPDATERATE = 70;// tempo de refresh objectos
 	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
 
@@ -143,15 +143,15 @@ public class PanelJogo extends JPanel implements KeyListener {
 					img = box;
 				} else if (bm.getMapa().getTab()[i][j] == 'E')
 					img = powerupBomb;
-				else if (bm.getMapa().getTab()[i][j]  == 'R')
-					img= powerupRange;
-				else if (bm.getMapa().getTab()[i][j]  == 'S')
+				else if (bm.getMapa().getTab()[i][j] == 'R')
+					img = powerupRange;
+				else if (bm.getMapa().getTab()[i][j] == 'S')
 					img = powerupSpeed;
 
 				xi = j * TILESIZE;
 				yi = i * TILESIZE;
 
-				//TODO TIRAR ESTA INSTRUCAO PARA TORNAR ISTO MAIS EFICIENTE
+				// TODO TIRAR ESTA INSTRUCAO PARA TORNAR ISTO MAIS EFICIENTE
 				g.drawImage(floor, xi, yi, TILESIZE, TILESIZE, null);
 				g.drawImage(img, xi, yi, TILESIZE, TILESIZE, null);
 			}
@@ -180,7 +180,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			dx1 = bm.getJogadores().get(i).getPos().getX();
 			dy1 = bm.getJogadores().get(i).getPos().getY();
 
-			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1);
+			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.30);
 		}
 
 		// impressao bombas
