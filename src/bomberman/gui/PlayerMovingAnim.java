@@ -13,7 +13,7 @@ public class PlayerMovingAnim implements Animation {
 
 	private int tempo;
 	private Image sprite;
-	private int dir, lastMoveIndex = 0, UPDATERATE = 80;
+	private int dir, lastMoveIndex = 0, UPDATERATE = 100;
 
 	private static final int TILESIZE = PanelJogo.TILESIZE;
 	public static final int DOWN = 0, LEFT = 1, RIGHT = 2, UP = 3, MOVE = 1;
@@ -44,7 +44,10 @@ public class PlayerMovingAnim implements Animation {
 	public void update(int tempo) {
 		this.tempo += tempo;
 		
-		if (this.tempo >= UPDATERATE) {
+
+		System.out.println(this.lastMoveIndex);
+		
+		if (this.tempo > UPDATERATE) {			
 			this.tempo -= UPDATERATE;
 
 			if (this.lastMoveIndex == 3) {

@@ -15,9 +15,12 @@ import java.util.Iterator;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import bomberman.connection.Connection;
+import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
 import bomberman.logic.Bomberman;
 import bomberman.logic.Jogador;
@@ -42,9 +45,9 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, pwup;
 
-	public PanelJogo(Bomberman bm) {
+	public PanelJogo(Bomberman bm, JFrame frame) {
+		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho() + 20, 50 * bm.getMapa().getTamanho() + 20);
 		setFocusable(true);
-		this.setMinimumSize(new Dimension(TILESIZE * bm.getMapa().getTamanho(), TILESIZE * bm.getMapa().getTamanho()));
 		this.loadImages();
 		this.setLayout(new FlowLayout());
 		this.setVisible(true);
@@ -53,28 +56,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 		timer = new Timer(UPDATERATE, timerListener);
 		timer.start();
 
-		System.out.println(bm.getJogadores().size());
-
-		// for (int i = 0; i < bm.getJogadores().size(); i++) {
-		//
-		// bm.getJogadores().get(i).setAnimation(new
-		// PlayerMovingAnim(parseColor(color), parseDirection(dir)));
-		// color++;
-		// if (dir == 2)
-		// dir = 1;
-		// else
-		// dir = 2;
-		//
-		// // animacoes.add(new
-		// // AnimJogador(Connection.getInstance().getConnections()[i]));
-		// }
-
-		// Bomberman.imprimeMapa(bm.getMapa().getTab(),
-		// bm.getMapa().getTamanho());
+		for (int i = 0; i < bm.getJogadores().size(); i++) {
+			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
+		}
 	}
 
 	// converte indice dir para TIPO DIRECCAO correspondente
-
 	public int parseDirection(Jogador.Direcao dir) {
 
 		if (dir == Jogador.Direcao.BAIXO)
@@ -180,7 +167,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 			dx1 = bm.getJogadores().get(i).getPos().getX();
 			dy1 = bm.getJogadores().get(i).getPos().getY();
 
-			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.30);
+			bm.getJogadores().get(i).getAnimation().render(g, dx1, dy1 - 0.20);
 		}
 
 		// impressao bombas
@@ -337,23 +324,30 @@ public class PanelJogo extends JPanel implements KeyListener {
 	}
 
 	ActionListener timerListener = new ActionListener() {
-		public void actionPerformed(ActionEvent e) {
-			// tempo += 60;
-			// bm.updateBomba(60);
-			// bm.verificaJogador(60);
 
+		public void actionPerformed(ActionEvent e) {
 			tempo += UPDATERATE;
 
-			// for (int i = 0; i < animacoes.size(); i++) {
-			// if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
-			// //bm.moveJogador(bm.getJogadores().get(i),
-			// animacoes.get(i).getDir());
-			// }
-			// if (animacoes.get(i).getNextInstruction() ==
-			// Instruction.PLANTBOMB) {
-			// bm.colocarBomba(bm.getJogadores().get(i));
-			// }
-			// }
+
+			for (int i = 0; i < animacoes.size(); i++) {
+				if (animacoes.get(i).getNextInstruction() == Instruction.MOVE) {
+
+					if (bm.getJogadores().get(i).getEstadoJogador() == Jogador.EstadoJogador.PARADO)
+						bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.MOVER);
+
+					bm.moveJogador(bm.getJogadores().get(i), animacoes.get(i).getDir());
+					bm.checkPowerUp(bm.getJogadores().get(i));
+
+				} else if (animacoes.get(i).getNextInstruction() == Instruction.STOP) {
+					
+					if (bm.getJogadores().get(i).getEstadoJogador() != Jogador.EstadoJogador.PARADO)
+						bm.getJogadores().get(i).setEstadoJogador(EstadoJogador.PARADO);					
+				}
+				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
+					bm.colocarBomba(bm.getJogadores().get(i));
+				}
+
+			}
 
 			// UPDATE ANIMACOES BOMBAS
 			for (int i = 0; i < bm.getBombas().size(); i++) {

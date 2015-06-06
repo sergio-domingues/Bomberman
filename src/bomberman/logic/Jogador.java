@@ -9,7 +9,7 @@ import bomberman.gui.PlayerStaticAnim;
 public class Jogador extends Peca {
 
 	// velocidades possiveis
-	private static final double velocidade_1 = 0.2, velocidade_2 = 0.25, velocidade_3 = 0.5, velocidade_4 = 1;
+	private static final double velocidade_1 = 0.125, velocidade_2 = 0.2, velocidade_3 = 0.25;
 
 	public static enum Direcao {
 		DIREITA, ESQUERDA, CIMA, BAIXO
@@ -50,6 +50,18 @@ public class Jogador extends Peca {
 	private int raioBomba = 2;
 	private ArrayList<PowerUp> powerUps;
 
+	// TODO INICIALIZAR THIS.PLAYINGMOVEANIM
+	Jogador(float x, float y, char sigla) {
+		super(x, y, sigla);
+		id = nextId;
+		nextId++;
+		estadoJogador = EstadoJogador.PARADO;
+		estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
+		color = parseColor(id - 1);
+		ultimaDirecao = parseDirection(id - 1);
+		animation = new PlayerStaticAnim(color, ultimaDirecao);
+	}
+
 	// =======================================================
 	public EstadoVulnerabilidade getEstadoVuln() {
 		return estadoVuln;
@@ -88,24 +100,13 @@ public class Jogador extends Peca {
 	}
 
 	public void setEstadoJogador(EstadoJogador estadoJogador) {
+		System.out.println("muda");
 		this.estadoJogador = estadoJogador;
 		if (estadoJogador == EstadoJogador.PARADO) {
 			this.animation = new PlayerStaticAnim(color, ultimaDirecao);
 		} else if (estadoJogador == EstadoJogador.MOVER) {
 			this.animation = new PlayerMovingAnim(color, ultimaDirecao);
 		}
-	}
-
-	// TODO INICIALIZAR THIS.PLAYINGMOVEANIM
-	Jogador(float x, float y, char sigla) {
-		super(x, y, sigla);
-		id = nextId;
-		nextId++;
-		estadoJogador = EstadoJogador.PARADO;
-		estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
-		color = parseColor(id - 1);
-		ultimaDirecao = parseDirection(id - 1);
-		animation = new PlayerStaticAnim(color, ultimaDirecao);
 	}
 
 	public void updateTempoJogador(int decremento) {
@@ -125,8 +126,6 @@ public class Jogador extends Peca {
 			this.velocidade = velocidade_2;
 		} else if (this.velocidade < velocidade_3) {
 			this.velocidade = velocidade_3;
-		} else if (this.velocidade < velocidade_4) {
-			this.velocidade = velocidade_4;
 		}
 	}
 
@@ -151,11 +150,14 @@ public class Jogador extends Peca {
 
 	public void move(Direcao d, Mapa mapa) {
 
+		if (this.estado == Peca.Estado.INATIVO)
+			return;
+
 		double x, y, deltax, deltay;// , deltay_ceil;
 
 		// arredondamento correctivo : 2.99999 -> 3.0 | 2.00003 = 2.0
-		x = Math.round(this.pos.getX() * 100.0) / 100.0;
-		y = Math.round(this.pos.getY() * 100.0) / 100.0;
+		x = Math.round(this.pos.getX() * 1000.0) / 1000.0;
+		y = Math.round(this.pos.getY() * 1000.0) / 1000.0;
 		deltax = x - Math.floor(x);
 		deltay = y - Math.floor(y);
 		// deltay_ceil = Math.ceil(y) - y;
@@ -168,14 +170,19 @@ public class Jogador extends Peca {
 						this.pos.setY(y - velocidade);
 					}
 				}
+
+				if (d != this.ultimaDirecao) {
+					((PlayerMovingAnim) animation).updateDir(d);
+				}
+
+				this.ultimaDirecao = Direcao.CIMA;
+
 			} else if (deltax < 0.5 && deltax > 0.0
 					&& (mapa.getTab()[(int) (y - 1)][(int) Math.floor(x)] == ' ' || checkCollidePowerup((int) Math.floor(x), (int) (y - 1), mapa)))
 				this.move(Direcao.ESQUERDA, mapa);
 			else if (deltax > 0.5 && deltax < 1.0
 					&& (mapa.getTab()[(int) (y - 1)][(int) Math.ceil(x)] == ' ' || checkCollidePowerup((int) Math.ceil(x), (int) (y - 1), mapa)))
 				this.move(Direcao.DIREITA, mapa);
-
-			this.ultimaDirecao = Direcao.CIMA;
 
 		} else if (d == Direcao.BAIXO) {
 			if (deltax == 0) {
@@ -185,14 +192,18 @@ public class Jogador extends Peca {
 						this.pos.setY(y + velocidade);
 					}
 				}
+
+				if (d != this.ultimaDirecao) {
+					((PlayerMovingAnim) animation).updateDir(d);
+				}
+				this.ultimaDirecao = Direcao.BAIXO;
+
 			} else if (deltax > 0.0 && deltax < 0.5
 					&& (mapa.getTab()[(int) (y + 1)][(int) Math.floor(x)] == ' ' || checkCollidePowerup((int) Math.floor(x), (int) (y + 1), mapa)))
 				this.move(Direcao.ESQUERDA, mapa);
 			else if (deltax > 0.5 && deltax < 1.0
-					&& (mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' ' || checkCollidePowerup((int)  Math.ceil(x), (int) (y + 1), mapa)))
+					&& (mapa.getTab()[(int) (y + 1)][(int) Math.ceil(x)] == ' ' || checkCollidePowerup((int) Math.ceil(x), (int) (y + 1), mapa)))
 				this.move(Direcao.DIREITA, mapa);
-
-			this.ultimaDirecao = Direcao.BAIXO;
 
 		} else if (d == Direcao.ESQUERDA) {
 			if (deltay == 0) {
@@ -202,14 +213,17 @@ public class Jogador extends Peca {
 						this.pos.setX(x - velocidade);
 					}
 				}
+				if (d != this.ultimaDirecao) {
+					((PlayerMovingAnim) animation).updateDir(d);
+				}
+
+				this.ultimaDirecao = Direcao.ESQUERDA;
 			} else if (deltay > 0.0 && deltay < 0.5
-					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' ' || checkCollidePowerup((int)(x - 1), (int) Math.floor(y), mapa)))
+					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x - 1)] == ' ' || checkCollidePowerup((int) (x - 1), (int) Math.floor(y), mapa)))
 				this.move(Direcao.CIMA, mapa);
 			else if (deltay > 0.5 && deltay < 1.0
-					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' ' || checkCollidePowerup((int)(x - 1), (int) Math.ceil(y), mapa)))
+					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x - 1)] == ' ' || checkCollidePowerup((int) (x - 1), (int) Math.ceil(y), mapa)))
 				this.move(Direcao.BAIXO, mapa);
-
-			this.ultimaDirecao = Direcao.ESQUERDA;
 
 		} else if (d == Direcao.DIREITA) {
 			if (deltay == 0) {
@@ -219,27 +233,20 @@ public class Jogador extends Peca {
 						this.pos.setX(x + velocidade);
 					}
 				}
+				if (d != this.ultimaDirecao) {
+					((PlayerMovingAnim) animation).updateDir(d);
+				}
+
+				this.ultimaDirecao = Direcao.DIREITA;
+
 			} else if (deltay > 0.0 && deltay < 0.5
-					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' ' || checkCollidePowerup((int)  (x + 1), (int) Math.floor(y), mapa)))
+					&& (mapa.getTab()[(int) Math.floor(y)][(int) (x + 1)] == ' ' || checkCollidePowerup((int) (x + 1), (int) Math.floor(y), mapa)))
 				this.move(Direcao.CIMA, mapa);
 			else if (deltay > 0.5 && deltay < 1.0
-					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' ' || checkCollidePowerup((int)  (x + 1), (int) Math.ceil(y), mapa)))
+					&& (mapa.getTab()[(int) Math.ceil(y)][(int) (x + 1)] == ' ' || checkCollidePowerup((int) (x + 1), (int) Math.ceil(y), mapa)))
 				this.move(Direcao.BAIXO, mapa);
 
-			this.ultimaDirecao = Direcao.DIREITA;
 		}
-
-		((PlayerMovingAnim) animation).updateDir(ultimaDirecao);
-
-		// System.out.println("x,y:");
-		// System.out.println(x);
-		// System.out.println(y);
-		// System.out.println("dx,dy:");
-		// System.out.println(deltax);
-		// System.out.println(deltay);
-		// System.out.println("dyceil:");
-		// System.out.println(deltay_ceil);
-
 	}
 
 	public void decBomba() {

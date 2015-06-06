@@ -52,7 +52,7 @@ public class ConnectionId extends Observable implements Runnable {
 
 			try {
 				String received = in.readLine();
-				System.out.println(received);
+				//System.out.println(received);
 
 				if (received.equals("ligar")) {
 					out.println("ACK");

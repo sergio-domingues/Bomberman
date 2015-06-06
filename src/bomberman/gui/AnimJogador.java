@@ -17,10 +17,9 @@ public class AnimJogador implements Observer {
 	private Jogador.Direcao dir = null;
 	private Instruction nextInstruction = null;
 
-
 	public AnimJogador(ConnectionId conn) {
 		this.conn = conn;
-		conn.addObserver(this);	
+		conn.addObserver(this);
 	}
 
 	@Override
@@ -28,33 +27,28 @@ public class AnimJogador implements Observer {
 		String message = (String) arg1;
 
 		System.out.println("update");
-		
-		if (message.equals("moveLeftPressed")) {
+
+		if (message.equals("moveLeft")) {
 			nextInstruction = Instruction.MOVE;
 			dir = Direcao.ESQUERDA;
-		} else if (message.equals("moveLeftReleased")) {
-			nextInstruction = Instruction.STOP;
-		} else if (message.equals("moveRightPressed")) {
+		} else if (message.equals("moveRight")) {
 			nextInstruction = Instruction.MOVE;
 			dir = Direcao.DIREITA;
-		} else if (message.equals("moveRightReleased")) {
-			nextInstruction = Instruction.STOP;
-		} else if (message.equals("moveUpPressed")) {
+
+		} else if (message.equals("moveUp")) {
 			nextInstruction = Instruction.MOVE;
 			dir = Direcao.CIMA;
-		} else if (message.equals("moveUpReleased")) {
-			nextInstruction = Instruction.STOP;
-		} else if (message.equals("moveDownPressed")) {
+		} else if (message.equals("moveDown")) {
 			nextInstruction = Instruction.MOVE;
 			dir = Direcao.BAIXO;
-		} else if (message.equals("moveDownReleased")) {
-			nextInstruction = Instruction.STOP;
 		} else if (message.equals("plantBomb")) {
 			nextInstruction = Instruction.PLANTBOMB;
+		} else if (message.equals("Stop")) {
+			nextInstruction = Instruction.STOP;
 		}
-		
+
 	}
-	
+
 	public Jogador.Direcao getDir() {
 		return dir;
 	}
