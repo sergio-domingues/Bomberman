@@ -47,6 +47,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho() + 35);
 
 		frame.setBounds(this.getBounds());
+		frame.setTitle("Playing");
 		setFocusable(true);
 		this.loadImages();
 		this.setLayout(new FlowLayout());
@@ -351,6 +352,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 				}
 				if (animacoes.get(i).getNextInstruction() == Instruction.PLANTBOMB) {
 					bm.colocarBomba(bm.getJogadores().get(i));
+					animacoes.get(i).resetInstruction();
 				}
 
 			}

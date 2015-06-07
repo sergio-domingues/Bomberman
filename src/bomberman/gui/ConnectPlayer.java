@@ -26,12 +26,14 @@ public class ConnectPlayer extends JPanel {
 	private int nrPlayersMax;
 	private JFrame frame;
 	private JLabel tempoLabel = new JLabel();
+	JLabel ipLabel;
 
 	public ConnectPlayer(int nrPlayers, JFrame frame) {
 
 		this.nrPlayersMax = nrPlayers;
 		loadImagens();
 		this.frame = frame;
+		this.frame.setTitle("Connecting Players");
 
 		this.setBounds(frame.getBounds());
 
@@ -58,9 +60,16 @@ public class ConnectPlayer extends JPanel {
 		tempoLabel.setBounds(frame.getWidth() / 2 - 150, frame.getHeight() / 2 - 250, 150, 150);
 		tempoLabel.setFont(new Font("Calibri", Font.BOLD, 150));
 		tempoLabel.setForeground(Color.RED);
+
+		ipLabel = new JLabel("<html>Connect to this IP:<br>" + Connection.getHostIp() + "</html>");
+		ipLabel.setBounds(frame.getWidth() / 2 - 250, frame.getHeight() / 2 - 220, 350, 150);
+		ipLabel.setFont(new Font("Calibri", Font.BOLD, 25));
+		ipLabel.setForeground(Color.BLUE);
+
 		this.add(tempoLabel);
 		this.add(ip);
 		this.add(nrConnectsLabel);
+		this.add(ipLabel);
 	}
 
 	@Override
@@ -120,6 +129,7 @@ public class ConnectPlayer extends JPanel {
 				tempoLabel.setText(Long.toString(tempo / 1000));
 			} else if (Connection.getInstance().getNrConnections() == nrPlayersMax) {
 				countDown = true;
+				ipLabel.setEnabled(false);
 			}
 			if (tempo <= 0 && comecouJogo == false) {
 				Gui.getInstance().startGame();

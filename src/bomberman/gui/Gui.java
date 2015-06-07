@@ -29,7 +29,7 @@ public class Gui {
 
 	public JFrame frame;
 	private JPanel jogo;
-	private int nrPlayers = 2;
+	private int nrPlayers = 1;
 	public int volume = 50;
 	private static Gui instance = null;
 	private SoundAnimation powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString());
@@ -75,6 +75,7 @@ public class Gui {
 		frame.setBounds(100, 100, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho());
 		frame.getContentPane().setLayout(null);
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame.setTitle("BOMBERMAN");
 
 		initMainMenu();
 
@@ -90,12 +91,22 @@ public class Gui {
 		this.jogo.setLayout(null);
 
 		Image logoImage = null;
+		Image fundo = null;
 		try {
 			logoImage = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\logo.png"));
+			fundo = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\background.png"));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		ImageIcon fundoIcon = new ImageIcon(fundo);
+		JLabel fundoLabel = new JLabel();
+		fundoLabel.setIcon(fundoIcon);
+		fundoLabel.setBounds(50, 100, 500, 500);
+		fundoLabel.setOpaque(true);
+
+		
+
 		ImageIcon logoIcon = new ImageIcon(logoImage);
 		JLabel logo = new JLabel();
 		logo.setIcon(logoIcon);
@@ -116,6 +127,10 @@ public class Gui {
 		play.setFont(fontLetras);
 		settings.setFont(fontLetras);
 		exit.setFont(fontLetras);
+		
+		play.setForeground(Color.RED);
+		settings.setForeground(Color.RED);
+		exit.setForeground(Color.RED);
 
 		play.setBorder(BorderFactory.createEmptyBorder());
 		play.setContentAreaFilled(false);
@@ -138,7 +153,7 @@ public class Gui {
 			}
 
 			public void mouseExited(java.awt.event.MouseEvent evt) {
-				play.setForeground(Color.BLACK);
+				play.setForeground(Color.RED);
 			}
 		});
 
@@ -154,7 +169,7 @@ public class Gui {
 			}
 
 			public void mouseExited(java.awt.event.MouseEvent evt) {
-				settings.setForeground(Color.BLACK);
+				settings.setForeground(Color.RED);
 			}
 		});
 
@@ -206,7 +221,7 @@ public class Gui {
 			}
 
 			public void mouseExited(java.awt.event.MouseEvent evt) {
-				exit.setForeground(Color.BLACK);
+				exit.setForeground(Color.RED);
 			}
 		});
 
@@ -219,6 +234,7 @@ public class Gui {
 		this.jogo.add(play);
 		this.jogo.add(settings);
 		this.jogo.add(exit);
+		jogo.add(fundoLabel);
 
 		frame.getContentPane().add(jogo);
 

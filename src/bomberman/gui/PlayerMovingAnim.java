@@ -43,11 +43,8 @@ public class PlayerMovingAnim implements Animation {
 	@Override
 	public void update(int tempo) {
 		this.tempo += tempo;
-		
 
-		System.out.println(this.lastMoveIndex);
-		
-		if (this.tempo > UPDATERATE) {			
+		if (this.tempo > UPDATERATE) {
 			this.tempo -= UPDATERATE;
 
 			if (this.lastMoveIndex == 3) {
@@ -67,7 +64,7 @@ public class PlayerMovingAnim implements Animation {
 			this.dir = RIGHT;
 		else
 			this.dir = LEFT;
-		
+
 		this.lastMoveIndex = 0;
 	}
 

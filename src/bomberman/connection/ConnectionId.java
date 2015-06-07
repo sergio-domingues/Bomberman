@@ -24,7 +24,7 @@ public class ConnectionId extends Observable implements Runnable {
 		id = nextId;
 		try {
 
-			clientSocket.setSoTimeout(15000);
+			clientSocket.setSoTimeout(20000);
 
 			out = new PrintWriter(clientSocket.getOutputStream(), true);
 			in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
@@ -52,7 +52,6 @@ public class ConnectionId extends Observable implements Runnable {
 
 			try {
 				String received = in.readLine();
-				//System.out.println(received);
 
 				if (received.equals("ligar")) {
 					out.println("ACK");
