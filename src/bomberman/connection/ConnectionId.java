@@ -94,7 +94,7 @@ public class ConnectionId extends Observable implements Runnable {
 			System.err.println("Cliente Desconectado");
 			closeConnection();
 		} else
-			System.out.println(id + ": " + lastMessage);
+			//System.out.println(id + ": " + lastMessage);
 
 		setChanged();
 		notifyObservers(lastMessage);

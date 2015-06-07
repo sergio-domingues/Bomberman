@@ -44,9 +44,6 @@ public class PlayerMovingAnim implements Animation {
 	public void update(int tempo) {
 		this.tempo += tempo;
 		
-
-		System.out.println(this.lastMoveIndex);
-		
 		if (this.tempo > UPDATERATE) {			
 			this.tempo -= UPDATERATE;
 

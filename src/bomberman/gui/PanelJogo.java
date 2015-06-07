@@ -36,7 +36,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 	private Bomberman bm;
 	private Timer timer;
-	private double tempo = 0;
+	private long tempo = 0;
 	private int dir = 2, color = 0;
 	private boolean playBackMusic = true;
 
@@ -327,6 +327,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 		public void actionPerformed(ActionEvent e) {
 			tempo += UPDATERATE;
+			bm.updateElapsedTime(UPDATERATE);
 
 
 			for (int i = 0; i < animacoes.size(); i++) {

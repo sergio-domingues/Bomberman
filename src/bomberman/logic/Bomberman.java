@@ -19,10 +19,10 @@ public class Bomberman {
 	private ArrayList<Bomba> bombas = new ArrayList<Bomba>();
 	private ArrayList<PowerUp> powerUps = new ArrayList<PowerUp>();
 
-	private SoundAnimation bombSound, powerupSound;
-
+	private SoundAnimation powerupSound;
 	private int numPwUps = 3; // TODO ALTERAR PARA VALOR PRETENDIDO
 	private boolean gameover = false;
+	private long elapsedTime = 0;
 
 	public int getNumPwUps() {
 		return numPwUps;
@@ -248,7 +248,7 @@ public class Bomberman {
 
 				if (j.getVidas() == 0) {
 					j.setEstado(Peca.Estado.INATIVO);	
-					//verificaEstadoJogo();
+					verificaEstadoJogo();
 				}
 			}
 		}
@@ -311,7 +311,7 @@ public class Bomberman {
 						if (j.getVidas() == 0) {
 							System.out.println("morreu");
 							j.setEstado(Peca.Estado.INATIVO);
-							//verificaEstadoJogo();
+							verificaEstadoJogo();
 						}
 					}
 				}
@@ -375,8 +375,23 @@ public class Bomberman {
 		//last player alive
 		if(counter == 1){			
 			gameover  = true;
-			System.exit(1);
+			
+			System.out.print("Highscore: ");
+			System.out.println( (this.jogadores.size()*100000) / (this.elapsedTime/1000));			
+			
 		}
+	}
+
+	public long getElapsedTime() {
+		return elapsedTime;
+	}
+
+	public void setElapsedTime(long elapsedTime) {
+		this.elapsedTime = elapsedTime;
+	}
+
+	public void updateElapsedTime(int updaterate) {
+		this.elapsedTime+=updaterate;		
 	}
 
 }
