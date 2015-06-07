@@ -16,6 +16,7 @@ public class AnimJogador implements Observer {
 
 	private Jogador.Direcao dir = null;
 	private Instruction nextInstruction = null;
+	private Instruction previousInstruction = null;
 
 	public AnimJogador(ConnectionId conn) {
 		this.conn = conn;
@@ -25,8 +26,7 @@ public class AnimJogador implements Observer {
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String message = (String) arg1;
-
-		System.out.println("update");
+		previousInstruction = nextInstruction;
 
 		if (message.equals("moveLeft")) {
 			nextInstruction = Instruction.MOVE;
@@ -55,5 +55,9 @@ public class AnimJogador implements Observer {
 
 	public Instruction getNextInstruction() {
 		return nextInstruction;
+	}
+
+	public void resetInstruction() {
+		nextInstruction = previousInstruction;
 	}
 }
