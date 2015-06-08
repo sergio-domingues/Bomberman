@@ -48,7 +48,7 @@ public class Bomba extends Peca {
 
 	/**
 	 * Obtem o temporizador da bomba
-	 * @return
+	 * @return temporizador da bomba
 	 */
 	public double getCronoBomba() {
 		return cronoBomba;
@@ -89,7 +89,7 @@ public class Bomba extends Peca {
 
 	/**
 	 * Novo Raio de Explosao
-	 * @param raio
+	 * @param raio Novo Raio
 	 */
 	public void setRaio(int raio) {
 		this.raio = raio;

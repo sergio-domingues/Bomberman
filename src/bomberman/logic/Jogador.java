@@ -172,7 +172,7 @@ public class Jogador extends Peca {
 	/**
 	 * Obtem o Numero de vidas do Jogador
 	 * 
-	 * @return
+	 * @return nr de vidas
 	 */
 	public int getVidas() {
 		return vidas;
@@ -242,7 +242,7 @@ public class Jogador extends Peca {
 	/**
 	 * Aumenta o raio da bomba
 	 * 
-	 * @param tamanho_mapa
+	 * @param tamanho_mapa tamanho
 	 */
 	public void updateRangeBomba(int tamanho_mapa) {
 		// -2 -> parede
@@ -262,7 +262,7 @@ public class Jogador extends Peca {
 	/**
 	 * Obtem o Id do jogador
 	 * 
-	 * @return
+	 * @return id do Jogador
 	 */
 	public int getId() {
 		return id;
@@ -440,7 +440,7 @@ public class Jogador extends Peca {
 
 	/**
 	 * Obtem a lista de PowerUps do Jogador
-	 * @return
+	 * @return ArrayList PowrUps
 	 */
 	public ArrayList<PowerUp> getPowerUps() {
 		return powerUps;
@@ -448,7 +448,7 @@ public class Jogador extends Peca {
 
 	/**
 	 * Adiciona um lista de PowerUps ao jogador
-	 * @param powerUps
+	 * @param powerUps Nova lista de PowerUps
 	 */
 	public void setPowerUps(ArrayList<PowerUp> powerUps) {
 		this.powerUps = powerUps;
@@ -456,7 +456,7 @@ public class Jogador extends Peca {
 
 	/**
 	 * Obtem o tempo de Invulnerabilidade do Jogador
-	 * @return
+	 * @return tempo Invelneravel
 	 */
 	public int getTempo_invulneravel() {
 		return tempo_invulneravel;
@@ -464,7 +464,7 @@ public class Jogador extends Peca {
 
 	/**
 	 * Modifica o tempo de invulnerabilidade do jogador
-	 * @param tempo_invulneravel
+	 * @param tempo_invulneravel Novo tempo invulneravel
 	 */
 	public void setTempo_invulneravel(int tempo_invulneravel) {
 		this.tempo_invulneravel = tempo_invulneravel;

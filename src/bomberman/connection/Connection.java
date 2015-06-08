@@ -182,7 +182,7 @@ public class Connection extends Thread {
 	/**
 	 * Retorna as Ligações existentes aos diferentes Clientes
 	 * 
-	 * @return
+	 * @return Array com as Ligações existentes
 	 */
 	synchronized public ConnectionId[] getConnections() {
 		return connections;
@@ -191,7 +191,7 @@ public class Connection extends Thread {
 	/**
 	 * Obtem o Nr Máximo de Ligações ao servidor
 	 * 
-	 * @return
+	 * @return Nr Maximo de Ligações
 	 */
 	public static int getMaxConnection() {
 		return maxConnection;
@@ -210,7 +210,7 @@ public class Connection extends Thread {
 	/**
 	 * Obtem o estado do servidor
 	 * 
-	 * @return
+	 * @return Estado
 	 */
 	synchronized public ServerStatus getStatus() {
 		return status;
@@ -227,6 +227,7 @@ public class Connection extends Thread {
 
 	/**
 	 * Obtem o Local Ip do Servidor
+	 * 
 	 * @return Nome+ Ip do Servidor
 	 */
 	public static String getHostIp() {

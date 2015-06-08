@@ -55,7 +55,7 @@ public class Highscore {
 
 	/**
 	 * Obtem o score
-	 * @returnScore
+	 * @return Score
 	 */
 	public int getScore() {
 		return score;
