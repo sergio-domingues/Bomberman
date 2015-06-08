@@ -9,6 +9,11 @@ import java.net.SocketException;
 import java.net.SocketTimeoutException;
 import java.util.Observable;
 
+/**
+ * Representa uma ligacao com o cliente
+ * @author Diogo Moura
+ *
+ */
 public class ConnectionId extends Observable implements Runnable {
 	public static int nextId = 1;
 	protected Socket clientSocket = null;
@@ -21,6 +26,10 @@ public class ConnectionId extends Observable implements Runnable {
 
 	private String lastMessage, ip;
 
+	/**
+	 * Nova Ligação
+	 * @param clientSocket Socket a que se vai ligar
+	 */
 	ConnectionId(Socket clientSocket) {
 		id = nextId;
 		try {
@@ -40,14 +49,25 @@ public class ConnectionId extends Observable implements Runnable {
 		nextId++;
 	}
 
+	/**
+	 * Ip do Cliente
+	 * @return Ip
+	 */
 	public String getIp() {
 		return ip;
 	}
 
+	/**
+	 * Obtem Id da Conexao
+	 * @return Id Conexao
+	 */
 	public int getIdConnection() {
 		return id;
 	}
 
+	/**
+	 * Trata da Comunicao com o Cliente
+	 */
 	public void run() {
 		while (!isConnected && running) {
 
@@ -69,6 +89,9 @@ public class ConnectionId extends Observable implements Runnable {
 		}
 	}
 
+	/**
+	 * Termina a Ligacao com o Cliente
+	 */
 	public synchronized void closeConnection() {
 		try {
 			isConnected = false;
@@ -80,7 +103,11 @@ public class ConnectionId extends Observable implements Runnable {
 		}
 	}
 
-	String readMessage() {
+	/**
+	 * Le mensagem do Cliente e notifica Observers
+	 * @return Messagem Lida
+	 */
+	private String readMessage() {
 		try {
 			lastMessage = in.readLine();
 		} catch (SocketTimeoutException e) {
@@ -95,19 +122,27 @@ public class ConnectionId extends Observable implements Runnable {
 			System.err.println("Cliente Desconectado");
 			closeConnection();
 		} else
-			// System.out.println(id + ": " + lastMessage);
+			System.out.println(id + ": " + lastMessage);
 
-			setChanged();
+		setChanged();
 		notifyObservers(lastMessage);
 		clearChanged();
 
 		return lastMessage;
 	}
 
+	/**
+	 * Obtem a ultima mesagem recebida
+	 * @return ultima Mensagem
+	 */
 	public String getLastMessage() {
 		return lastMessage;
 	}
 
+	/**
+	 * Verifica se esta ligado
+	 * @return True se estiver/ False o contrario
+	 */
 	public boolean isConnected() {
 		return isConnected;
 	}

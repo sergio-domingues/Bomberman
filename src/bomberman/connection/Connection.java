@@ -6,6 +6,12 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
+/**
+ * Classe responsavel pelo sistema de rede Utiliza o padrao de desenho Singleton
+ * 
+ * @author Diogo Moura
+ *
+ */
 public class Connection extends Thread {
 	protected static Connection instance = null;
 	protected static int maxConnection = 2;
@@ -15,6 +21,12 @@ public class Connection extends Thread {
 	protected ConnectionId connections[];
 	protected int nrConnections = 0;
 
+	/**
+	 * Estado do Servidor
+	 * 
+	 * @author Diogo Moura
+	 *
+	 */
 	public enum ServerStatus {
 		GETTINGCLIENT, RUNNING, STOPPED
 	};
@@ -24,6 +36,9 @@ public class Connection extends Thread {
 	protected boolean isRunning = true;
 	public final static int PORT = 4445;
 
+	/**
+	 * Cria uma ServerSocket e inicia as variaveis do servidor necessarias
+	 */
 	public Connection() {
 		connections = new ConnectionId[maxConnection];
 		status = ServerStatus.GETTINGCLIENT;
@@ -44,6 +59,12 @@ public class Connection extends Thread {
 		}
 	}
 
+	/**
+	 * Aplicacao do Padrao Singleton Se nao existir nenhuma conexao cria uma e
+	 * inicia o servidor, se já existir retorna essa ligação
+	 * 
+	 * @return Conexao
+	 */
 	public static Connection getInstance() {
 		if (instance == null) {
 			instance = new Connection();
@@ -52,6 +73,13 @@ public class Connection extends Thread {
 		return instance;
 	}
 
+	/**
+	 * Inicia o Servidor e consolante o estado executa determinadas operacoes Se
+	 * estiver em: - GETTINGCLIENT ficà espera que os clientes se connectem até
+	 * chegar ao limite definido - RUNNING fica a correr o servidor
+	 * indefinidamente - STOPPED termina todas as ligações dos clientes e
+	 * encerra o servidor
+	 */
 	public void run() {
 
 		while (status == ServerStatus.GETTINGCLIENT) {
@@ -60,7 +88,7 @@ public class Connection extends Thread {
 				try {
 					Socket clientSocket = this.serverSocket.accept();
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
-						//TODO ver este next id
+						// TODO ver este next id
 						connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
 						new Thread(connections[ConnectionId.nextId - 2]).start();
 						nrConnections++;
@@ -106,6 +134,13 @@ public class Connection extends Thread {
 
 	}
 
+	/**
+	 * Verifica se já exite determinada ligacao
+	 * 
+	 * @param ip
+	 *            Ip da ligacao
+	 * @return True- existir False se nao existir
+	 */
 	private boolean existsConnect(String ip) {
 		for (int i = 0; i < maxConnection; i++) {
 			if (connections[i] != null && connections[i].getIp().equals(ip)) {
@@ -115,6 +150,9 @@ public class Connection extends Thread {
 		return false;
 	}
 
+	/**
+	 * Muda o estado do Servidor para STOPPED e faz reset da instance
+	 */
 	public synchronized void stopServer() {
 		this.status = ServerStatus.STOPPED;
 
@@ -131,30 +169,66 @@ public class Connection extends Thread {
 
 	}
 
+	/**
+	 * Muda o estado do Servidor
+	 * 
+	 * @param status
+	 *            Novo Estado
+	 */
 	public void changeStatus(ServerStatus status) {
 		this.status = status;
 	}
 
+	/**
+	 * Retorna as Ligações existentes aos diferentes Clientes
+	 * 
+	 * @return
+	 */
 	synchronized public ConnectionId[] getConnections() {
 		return connections;
 	}
 
+	/**
+	 * Obtem o Nr Máximo de Ligações ao servidor
+	 * 
+	 * @return
+	 */
 	public static int getMaxConnection() {
 		return maxConnection;
 	}
 
+	/**
+	 * Atribui um novo Maximo de Conexoes
+	 * 
+	 * @param maxConnection
+	 *            Novo máximo
+	 */
 	public static void setMaxConnection(int maxConnection) {
 		Connection.maxConnection = maxConnection;
 	}
 
+	/**
+	 * Obtem o estado do servidor
+	 * 
+	 * @return
+	 */
 	synchronized public ServerStatus getStatus() {
 		return status;
 	}
 
+	/**
+	 * Obtem o numero de conexoes activas
+	 * 
+	 * @return Nr de Conexoes activas
+	 */
 	synchronized public int getNrConnections() {
 		return nrConnections;
 	}
 
+	/**
+	 * Obtem o Local Ip do Servidor
+	 * @return Nome+ Ip do Servidor
+	 */
 	public static String getHostIp() {
 		return hostIp;
 	}
