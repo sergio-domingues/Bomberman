@@ -13,6 +13,13 @@ import bomberman.gui.SoundAnimation;
 import bomberman.logic.Builder.Difficulty;
 import bomberman.logic.Peca.Estado;
 
+/**
+ * Classe Principal do Jogo Faz a ligancao de todos os componentes e executa
+ * operacoes relevantes para este
+ * 
+ * @author Diogo Moura
+ *
+ */
 public class Bomberman {
 	private Mapa mapa;
 	private ArrayList<Jogador> jogadores = new ArrayList<Jogador>();
@@ -20,34 +27,13 @@ public class Bomberman {
 	private ArrayList<PowerUp> powerUps = new ArrayList<PowerUp>();
 
 	private SoundAnimation powerupSound;
-	private int numPwUps = 3; // TODO ALTERAR PARA VALOR PRETENDIDO
+	private int numPwUps = 3;
 	private boolean gameover = false;
 	private long elapsedTime = 0;
 
-	public int getNumPwUps() {
-		return numPwUps;
-	}
-
-	public void setNumPwUps(int numPwUps) {
-		this.numPwUps = numPwUps;
-	}
-
-	public Mapa getMapa() {
-		return mapa;
-	}
-
-	public void setMapa(Mapa mapa) {
-		this.mapa = mapa;
-	}
-
-	public ArrayList<Jogador> getJogadores() {
-		return jogadores;
-	}
-
-	public ArrayList<Bomba> getBombas() {
-		return bombas;
-	}
-
+	/**
+	 * Construtor do Bomberman
+	 */
 	public Bomberman() {
 		mapa = new Mapa(15);
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
@@ -55,20 +41,67 @@ public class Bomberman {
 		loadSounds();
 	}
 
-	public void loadSounds() {
-		this.powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\powerupSound.mp3").toURI().toString());
+	/**
+	 * Obtem Nr de PowerUp Diferentes
+	 * 
+	 * @return Nr de PowerUps Diferentes
+	 */
+	public int getNumPwUps() {
+		return numPwUps;
 	}
 
-	// MUSICA
-	public void teste() throws URISyntaxException {
+	/**
+	 * Modifica o Nr de PowerUp Diferentes
+	 * 
+	 * @param numPwUps
+	 *            Novo Nr
+	 */
+	public void setNumPwUps(int numPwUps) {
+		this.numPwUps = numPwUps;
+	}
 
-		// System.out.print(System.getProperty("user.dir")+"\\resources\\sound.wav");
-		new javafx.embed.swing.JFXPanel();
+	/**
+	 * Obtem o Mapa de Jogo
+	 * 
+	 * @return Mapa
+	 */
+	public Mapa getMapa() {
+		return mapa;
+	}
 
-		String s = new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString();
-		MediaPlayer player = new MediaPlayer(new Media(s));
-		// player.setVolume(0.8);
-		player.play();
+	/**
+	 * Modifica o Mapa de jogo
+	 * 
+	 * @param mapa
+	 *            Novo Mapa de Jogo
+	 */
+	public void setMapa(Mapa mapa) {
+		this.mapa = mapa;
+	}
+
+	/**
+	 * Obtem os Jogadores
+	 * 
+	 * @return ArrayList com todos os jogadores activos
+	 */
+	public ArrayList<Jogador> getJogadores() {
+		return jogadores;
+	}
+
+	/**
+	 * Obtem as Bombas activas em jogo
+	 * 
+	 * @return ArrayList com as Bombas
+	 */
+	public ArrayList<Bomba> getBombas() {
+		return bombas;
+	}
+
+	/**
+	 * Carrega o Som De Apanhar PowerUp
+	 */
+	public void loadSounds() {
+		this.powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\powerupSound.mp3").toURI().toString());
 	}
 
 	public static void main(String[] args) throws IOException, URISyntaxException {
@@ -76,9 +109,16 @@ public class Bomberman {
 		imprimeMapa(b.createEasyMap(), 15);
 
 		Bomberman bmb = new Bomberman();
-		bmb.teste();
 	}
 
+	/**
+	 * Imprime o Mapa de jogo na consola
+	 * 
+	 * @param tab
+	 *            Mapa
+	 * @param tamanho
+	 *            Tamanho do Mapa
+	 */
 	public static void imprimeMapa(char[][] tab, int tamanho) {
 		for (int i = 0; i < tamanho; i++) {
 			for (int j = 0; j < tamanho; j++) {
@@ -88,6 +128,14 @@ public class Bomberman {
 		}
 	}
 
+	/**
+	 * Move um jogador numa direcao
+	 * 
+	 * @param j
+	 *            Jogador
+	 * @param dir
+	 *            Direcao
+	 */
 	public void moveJogador(Jogador j, Jogador.Direcao dir) {
 
 		if (j.getEstado() == Peca.Estado.INATIVO)
@@ -96,6 +144,9 @@ public class Bomberman {
 		j.move(dir, mapa);
 	}
 
+	/**
+	 * Adiciona um Jogador ao jogo
+	 */
 	public void adicionarJogador() {
 		Jogador j;
 
@@ -121,6 +172,12 @@ public class Bomberman {
 		}
 	}
 
+	/**
+	 * Coloca uma Bomba por um certo Jogador
+	 * 
+	 * @param j
+	 *            Jogador que vai colocar a bomba
+	 */
 	public void colocarBomba(Jogador j) {
 
 		if (j.getEstado() == Peca.Estado.INATIVO)
@@ -133,6 +190,12 @@ public class Bomberman {
 		}
 	}
 
+	/**
+	 * Faz updade ao crono de todas as bombas activas
+	 * 
+	 * @param decremento
+	 *            Valor a decrementas aos varios cronos
+	 */
 	public void updateBomba(double decremento) {
 		int bombFlag = 0;
 		for (Iterator<Bomba> it = bombas.iterator(); it.hasNext();) {
@@ -146,6 +209,14 @@ public class Bomberman {
 		}
 	}
 
+	/**
+	 * Explode uma bomba
+	 * 
+	 * @param b
+	 *            Bomba a explodir
+	 * @param flag
+	 *            Estado da Bomba 0- Inactiva 1- Aramda 2 - Explodir
+	 */
 	public void explodirBomba(Bomba b, int flag) {
 
 		if (flag == 0)
@@ -251,6 +322,13 @@ public class Bomberman {
 		}
 	}
 
+	/**
+	 * verifica se um Jogador Aanhou um PowerUp
+	 * 
+	 * @param j
+	 *            Jogador a verificar colisao
+	 * @return Apanhou ou nao o algum PowerUp
+	 */
 	public boolean checkPowerUp(Jogador j) {
 
 		for (Iterator<PowerUp> it = powerUps.iterator(); it.hasNext();) {
@@ -278,6 +356,12 @@ public class Bomberman {
 		return false;
 	}
 
+	/**
+	 * Verifica se os diferentes jogadores foram afectados por alguma explosao
+	 * 
+	 * @param dec
+	 *            Milisegundos a decrementar ao crono do Jogador
+	 */
 	public void verificaJogador(int dec) {
 
 		for (Iterator<Jogador> it = this.jogadores.iterator(); it.hasNext();) {
@@ -315,6 +399,15 @@ public class Bomberman {
 		}
 	}
 
+	/**
+	 * Gera um PowerUp quando uma caixa explode
+	 * 
+	 * @param x
+	 *            Posicao Horizontal PowerUp
+	 * @param y
+	 *            Posicao Vertical PowerUp
+	 * @return PowerUp gerado
+	 */
 	public PowerUp geraPowerUp(double x, double y) {
 
 		Random gerador = new Random();
@@ -348,14 +441,25 @@ public class Bomberman {
 		return null;
 	}
 
+	/**
+	 * Obtem a Lista dos PowerUps activos
+	 * @return ArrayList PowerUp
+	 */
 	public ArrayList<PowerUp> getPowerUps() {
 		return powerUps;
 	}
 
+	/**
+	 * Modifica a Lista dos PowerUp activos 
+	 * @param powerUps Nova Lista de PowerUps
+	 */
 	public void setPowerUps(ArrayList<PowerUp> powerUps) {
 		this.powerUps = powerUps;
 	}
 
+	/**
+	 * Verifica se o Jogo ainda está activo ou se só resta um jogador
+	 */
 	public void verificaEstadoJogo() {
 
 		int counter = 0;
@@ -369,25 +473,37 @@ public class Bomberman {
 		if (counter == 1) {
 			gameover = true;
 
-			// System.out.print("Highscore: ");
-			// System.out.println((this.jogadores.size() * 100000) /
-			// (this.elapsedTime / 1000));
-
 		}
 	}
 
+	/**
+	 * Obtem o tempo total de jogo
+	 * @return Tempo em Milisegundos
+	 */
 	public long getElapsedTime() {
 		return elapsedTime;
 	}
 
+	/**
+	 * Atrinui Novo tempo de jogo
+	 * @param elapsedTime Novo tempo
+	 */
 	public void setElapsedTime(long elapsedTime) {
 		this.elapsedTime = elapsedTime;
 	}
 
+	/**
+	 * Incrementa o Tempo de Jogo
+	 * @param updaterate Incremento
+	 */
 	public void updateElapsedTime(int updaterate) {
 		this.elapsedTime += updaterate;
 	}
 
+	/**
+	 * Verifica quem ganhou o jogo
+	 * @return Id do Vencedor
+	 */
 	public int isGameover() {
 		if (gameover) {
 			for (int i = 0; i < this.jogadores.size(); i++) {
@@ -398,6 +514,10 @@ public class Bomberman {
 		return -1;
 	}
 
+	/**
+	 * Gera o Highscore do Vencedor
+	 * @return Highscore
+	 */
 	public int generateHighscore() {
 		return (int) ((this.jogadores.size() * 100000) / (this.elapsedTime / 1000));
 	}

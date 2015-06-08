@@ -2,6 +2,11 @@ package bomberman.logic;
 
 import bomberman.logic.Pos;
 
+/**
+ * Classe Mae de todas os Componentes do jogo
+ * @author Diogo Moura
+ * 
+ */
 public class Peca {
 	public static enum Estado {
 		ACTIVO, INATIVO
@@ -11,6 +16,12 @@ public class Peca {
 	protected char sigla;
 	protected Estado estado;
 
+	/**
+	 * 
+	 * @param x Posicao Horizontal da Peca
+	 * @param y Posição Vertical da Peca
+	 * @param sigla Caracter indentificador da Peça
+	 */
 	Peca(double x, double y, char sigla) {
 		pos = new Pos(x, y);
 		this.sigla = sigla;
@@ -36,18 +47,34 @@ public class Peca {
 		this.sigla = sigla;
 	}
 
+	/**
+	 * Obtem Posicao da Peca
+	 * @return Posicao da Peca
+	 */
 	public Pos getPos() {
 		return pos;
 	}
 
+	/**
+	 * Coloca a Peca numa posicao
+	 * @param pos Nova Posicao
+	 */
 	public void setPos(Pos pos) {
 		this.pos = pos;
 	}
 
+	/**
+	 * Obtem o estado da Peça
+	 * @return ACTIVA ou INACTIVA
+	 */
 	public Estado getEstado() {
 		return estado;
 	}
 
+	/**
+	 * Muda o estado da Peca
+	 * @param estado ACTIVO ou INACTIVO
+	 */
 	public void setEstado(Estado estado) {
 		this.estado = estado;
 	}
@@ -66,6 +93,13 @@ public class Peca {
 			return false;
 	}
 
+	/**
+	 * Verifica se um Peca avista a outra, ou seja tem caminho desempedido, consoanet o mapa e o alcance da visualização
+	 * @param p peca a ser avistada
+	 * @param tab Mapa onde se encontram as pecas
+	 * @param alcance Alcance maximo da peca
+	 * @return Avista a peca pretendida
+	 */
 	public boolean ver(Peca p, Mapa tab, double alcance) {
 
 		int pos;

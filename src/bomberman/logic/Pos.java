@@ -7,14 +7,12 @@ package bomberman.logic;
  */
 public class Pos {
 	private double x, y;
-
+ 
 	/**
 	 * Define uma coordenada cartesiana
 	 * 
-	 * @param x
-	 *            Coordenada Horizontal
-	 * @param y
-	 *            Coordenada Vertical
+	 * @param x Coordenada Horizontal
+	 * @param y Coordenada Vertical
 	 */
 	public Pos(double x, double y) {
 		this.x = x;

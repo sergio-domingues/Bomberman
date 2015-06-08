@@ -6,9 +6,19 @@ import java.util.Observer;
 import bomberman.connection.ConnectionId;
 import bomberman.logic.Jogador.Direcao;
 
+/**
+ * Classe responsavel pela ligação entre a logica do jogo e o sistema de rede 
+ * @author Diogo Moura
+ *
+ */
 public class JogadorHandler implements Observer {
 	private ConnectionId conn;
 
+	/**
+	 * Lista de Instrucoes recebidas
+	 * @author Diogo Moura
+	 *
+	 */
 	public enum Instruction {
 		PLANTBOMB, MOVE, STOP
 	}
@@ -22,6 +32,7 @@ public class JogadorHandler implements Observer {
 		conn.addObserver(this);
 	}
 
+	
 	@Override
 	public void update(Observable arg0, Object arg1) {
 		String message = (String) arg1;
@@ -48,14 +59,25 @@ public class JogadorHandler implements Observer {
 
 	}
 
+	/**
+	 * Obtem a Direcao da do Proximo Movimento do Jogador 
+	 * @return Direcao
+	 */
 	public Jogador.Direcao getDir() {
 		return dir;
 	}
 
+	/**
+	 * Obtem a proxima Instrução a ser executada
+	 * @return Proxima Instrução
+	 */
 	public Instruction getNextInstruction() {
 		return nextInstruction;
 	}
 
+	/**
+	 * Elimina a Intrucao actual e altera a para a anterior
+	 */
 	public void resetInstruction() {
 		nextInstruction = previousInstruction;
 	}

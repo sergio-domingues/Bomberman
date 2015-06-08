@@ -2,7 +2,17 @@ package bomberman.logic;
 
 import java.util.Random;
 
+/**
+ * COntrutor do Mapa
+ * @author Diogo Moura
+ *
+ */
 public class Builder {
+	/**
+	 * Dificuldade do Mapa a construir
+	 * @author Diogo Moura
+	 *
+	 */
 	public enum Difficulty {
 		EASY, MEDIUM, HARD
 	};
@@ -13,12 +23,20 @@ public class Builder {
 															// ocupado por
 															// paredes no incio
 															// do jogo
-
+	/**
+	 * Construtor do Criador de Mapa
+	 * @param d Dificuldade do Mapa a ser criado
+	 * @param size tamanho do mapa
+	 */
 	public Builder(Difficulty d, int size) {
 		tamanho = size;
 		difficulty = d;
 	}
 
+	/**
+	 * Cria um mapa facil
+	 * @return Matriz com o mapa (Paredes Fixas e Caixas)
+	 */
 	public char[][] createEasyMap() {
 		char[][] mapa = new char[tamanho][tamanho];
 
