@@ -95,7 +95,7 @@ public class Gui {
 
 		this.jogo = new JPanel();
 
-		this.jogo.setBounds(frame.getBounds());
+		this.jogo.setBounds(0, 0, frame.getBounds().width, frame.getBounds().height);
 
 		this.jogo.setLayout(null);
 
@@ -110,24 +110,24 @@ public class Gui {
 		ImageIcon fundoIcon = new ImageIcon(fundo);
 		JLabel fundoLabel = new JLabel();
 		fundoLabel.setIcon(fundoIcon);
-		fundoLabel.setBounds(50, 100, 500, 500);
+		fundoLabel.setBounds(150, 200, 500, 500);
 		fundoLabel.setOpaque(true);
 
 		ImageIcon logoIcon = new ImageIcon(logoImage);
 		JLabel logo = new JLabel();
 		logo.setIcon(logoIcon);
-		logo.setBounds(frame.getWidth() / 6 - 50, frame.getHeight() / 6 - 150, 500, 150);
+		logo.setBounds(150, 30, 500, 150);
 
 		jogo.add(logo);
 
 		JButton play = new JButton("Play");
-		play.setBounds(frame.getWidth() / 2 - 225, (int) 2.5 * frame.getHeight() / 6 - 100, 250, 100);
+		play.setBounds(250, 250, 250, 100);
 
 		JButton settings = new JButton("Settings");
-		settings.setBounds(frame.getWidth() / 2 - 225, (int) 3.5 * frame.getHeight() / 6 - 50, 250, 100);
+		settings.setBounds(250, 400, 250, 100);
 
 		JButton exit = new JButton("Exit");
-		exit.setBounds(frame.getWidth() / 2 - 225, (int) 4.5 * frame.getHeight() / 6, 250, 100);
+		exit.setBounds(250, 550, 250, 100);
 
 		Font fontLetras = new Font("Calibri", Font.BOLD, 55);
 		play.setFont(fontLetras);

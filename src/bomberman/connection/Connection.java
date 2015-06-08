@@ -43,7 +43,7 @@ public class Connection extends Thread {
 		connections = new ConnectionId[maxConnection];
 		status = ServerStatus.GETTINGCLIENT;
 
-		// ConnectionId.nextId = 1;
+		ConnectionId.nextId = 1;
 		this.nrConnections = 0;
 
 		try {
@@ -88,7 +88,6 @@ public class Connection extends Thread {
 				try {
 					Socket clientSocket = this.serverSocket.accept();
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
-						// TODO ver este next id
 						connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
 						new Thread(connections[ConnectionId.nextId - 2]).start();
 						nrConnections++;

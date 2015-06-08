@@ -40,7 +40,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private boolean playBackMusic = true;
 
 	private static final int UPDATERATE = 70;// tempo de refresh objectos
-	private static ArrayList<JogadorHandler> animacoes = new ArrayList<JogadorHandler>();
+	private ArrayList<JogadorHandler> animacoes = new ArrayList<JogadorHandler>();
 
 	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, heart;
 
@@ -61,6 +61,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
 			animacoes.add(new JogadorHandler(Connection.getInstance().getConnections()[i]));
 		}
+		System.out.println("Animacoes:" + animacoes.size());
 
 	}
 
