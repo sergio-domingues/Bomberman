@@ -140,7 +140,7 @@ public class Bomberman {
 
 		if (j.getEstado() == Peca.Estado.INATIVO)
 			return;
-
+		
 		j.move(dir, mapa);
 	}
 
