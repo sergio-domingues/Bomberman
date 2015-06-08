@@ -14,6 +14,7 @@ public class ConnectionId extends Observable implements Runnable {
 	protected Socket clientSocket = null;
 	private int id;
 	private boolean isConnected = false;
+	private boolean running = true;
 
 	private PrintWriter out;
 	private BufferedReader in;
@@ -48,7 +49,7 @@ public class ConnectionId extends Observable implements Runnable {
 	}
 
 	public void run() {
-		while (!isConnected) {
+		while (!isConnected && running) {
 
 			try {
 				String received = in.readLine();
@@ -63,14 +64,15 @@ public class ConnectionId extends Observable implements Runnable {
 			}
 		}
 
-		while (isConnected) {
+		while (isConnected && running) {
 			readMessage();
 		}
 	}
 
-	public void closeConnection() {
+	public synchronized void closeConnection() {
 		try {
 			isConnected = false;
+			running = false;
 			this.clientSocket.close();
 			nextId--;
 		} catch (IOException e) {
@@ -93,9 +95,9 @@ public class ConnectionId extends Observable implements Runnable {
 			System.err.println("Cliente Desconectado");
 			closeConnection();
 		} else
-			//System.out.println(id + ": " + lastMessage);
+			// System.out.println(id + ": " + lastMessage);
 
-		setChanged();
+			setChanged();
 		notifyObservers(lastMessage);
 		clearChanged();
 

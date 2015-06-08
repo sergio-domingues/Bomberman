@@ -28,6 +28,9 @@ public class Connection extends Thread {
 		connections = new ConnectionId[maxConnection];
 		status = ServerStatus.GETTINGCLIENT;
 
+		// ConnectionId.nextId = 1;
+		this.nrConnections = 0;
+
 		try {
 			serverSocket = new ServerSocket(PORT);
 		} catch (IOException e) {
@@ -52,10 +55,12 @@ public class Connection extends Thread {
 	public void run() {
 
 		while (status == ServerStatus.GETTINGCLIENT) {
+			System.out.println(ConnectionId.nextId);
 			if (ConnectionId.nextId <= maxConnection) {
 				try {
 					Socket clientSocket = this.serverSocket.accept();
 					if (!existsConnect(clientSocket.getInetAddress().getHostName())) {
+						//TODO ver este next id
 						connections[ConnectionId.nextId - 1] = new ConnectionId(clientSocket);
 						new Thread(connections[ConnectionId.nextId - 2]).start();
 						nrConnections++;
@@ -82,14 +87,21 @@ public class Connection extends Thread {
 		}
 
 		while (status == ServerStatus.RUNNING) {
-//			for (int i = 0; i < maxConnection; i++) {
-//				if (!connections[i].isConnected()) {
-//					connections[i] = null;
-//					nrConnections--;
-//				}
-//			}
+			// for (int i = 0; i < maxConnection; i++) {
+			// if (!connections[i].isConnected()) {
+			// connections[i] = null;
+			// nrConnections--;
+			// }
+			// }
 
 		}
+
+		if (status == ServerStatus.STOPPED) {
+			for (int i = 0; i < connections.length; i++) {
+				connections[i].closeConnection();
+			}
+		}
+
 		System.err.println("Server Stopped.");
 
 	}
@@ -104,9 +116,11 @@ public class Connection extends Thread {
 	}
 
 	public synchronized void stopServer() {
-		this.isRunning = false;
+		this.status = ServerStatus.STOPPED;
+
 		try {
 			this.serverSocket.close();
+			instance = null;
 		} catch (IOException e) {
 			throw new RuntimeException("Error closing server", e);
 		}

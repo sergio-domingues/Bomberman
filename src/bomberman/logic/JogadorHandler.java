@@ -1,16 +1,15 @@
-package bomberman.gui;
+package bomberman.logic;
 
 import java.util.Observable;
 import java.util.Observer;
 
 import bomberman.connection.ConnectionId;
-import bomberman.logic.Jogador;
 import bomberman.logic.Jogador.Direcao;
 
-public class AnimJogador implements Observer {
+public class JogadorHandler implements Observer {
 	private ConnectionId conn;
 
-	enum Instruction {
+	public enum Instruction {
 		PLANTBOMB, MOVE, STOP
 	}
 
@@ -18,7 +17,7 @@ public class AnimJogador implements Observer {
 	private Instruction nextInstruction = null;
 	private Instruction previousInstruction = null;
 
-	public AnimJogador(ConnectionId conn) {
+	public JogadorHandler(ConnectionId conn) {
 		this.conn = conn;
 		conn.addObserver(this);
 	}

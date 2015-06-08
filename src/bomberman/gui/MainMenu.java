@@ -1,6 +1,5 @@
-	package bomberman.gui;
+package bomberman.gui;
 
-import java.awt.FlowLayout;
 import java.awt.GridLayout;
 
 import javax.swing.JButton;

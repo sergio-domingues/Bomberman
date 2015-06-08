@@ -18,12 +18,13 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import bomberman.connection.Connection;
-import bomberman.gui.AnimJogador.Instruction;
 import bomberman.logic.Bomba.EstadoBomba;
 import bomberman.logic.Bomberman;
 import bomberman.logic.Jogador;
+import bomberman.logic.JogadorHandler;
 import bomberman.logic.Jogador.Direcao;
 import bomberman.logic.Jogador.EstadoJogador;
+import bomberman.logic.JogadorHandler.Instruction;
 import bomberman.logic.Peca;
 
 @SuppressWarnings("serial")
@@ -39,9 +40,9 @@ public class PanelJogo extends JPanel implements KeyListener {
 	private boolean playBackMusic = true;
 
 	private static final int UPDATERATE = 70;// tempo de refresh objectos
-	private static ArrayList<AnimJogador> animacoes = new ArrayList<AnimJogador>();
+	private static ArrayList<JogadorHandler> animacoes = new ArrayList<JogadorHandler>();
 
-	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, pwup, heart;
+	private BufferedImage box, wall, floor, powerupBomb, powerupSpeed, powerupRange, heart;
 
 	public PanelJogo(Bomberman bm, JFrame frame) {
 		this.setBounds(0, 0, 50 * bm.getMapa().getTamanho(), 50 * bm.getMapa().getTamanho() + 35);
@@ -58,7 +59,7 @@ public class PanelJogo extends JPanel implements KeyListener {
 		timer.start();
 
 		for (int i = 0; i < bm.getJogadores().size(); i++) {
-			animacoes.add(new AnimJogador(Connection.getInstance().getConnections()[i]));
+			animacoes.add(new JogadorHandler(Connection.getInstance().getConnections()[i]));
 		}
 
 	}
@@ -372,6 +373,12 @@ public class PanelJogo extends JPanel implements KeyListener {
 
 			bm.updateBomba(UPDATERATE);
 			bm.verificaJogador(UPDATERATE);
+
+			if (bm.isGameover() > 0) {
+				timer.stop();
+				Gui.getInstance().startHighcoreMenu(bm.isGameover(), bm.generateHighscore());
+			}
+
 			repaint();
 		}
 	};

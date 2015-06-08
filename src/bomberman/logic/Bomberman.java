@@ -51,8 +51,7 @@ public class Bomberman {
 	public Bomberman() {
 		mapa = new Mapa(15);
 		mapa.setTabuleiro(new Builder(Difficulty.EASY, 15).createEasyMap());
-
-		// adicionarJogador();
+		Jogador.resetNextId();
 		loadSounds();
 	}
 
@@ -90,10 +89,10 @@ public class Bomberman {
 	}
 
 	public void moveJogador(Jogador j, Jogador.Direcao dir) {
-		
-		if(j.getEstado() == Peca.Estado.INATIVO)
+
+		if (j.getEstado() == Peca.Estado.INATIVO)
 			return;
-		
+
 		j.move(dir, mapa);
 	}
 
@@ -123,10 +122,10 @@ public class Bomberman {
 	}
 
 	public void colocarBomba(Jogador j) {
-		
-		if(j.getEstado() == Peca.Estado.INATIVO)
+
+		if (j.getEstado() == Peca.Estado.INATIVO)
 			return;
-		
+
 		if (j.getNrBombas() == 0) {
 			return;
 		} else {
@@ -233,9 +232,9 @@ public class Bomberman {
 
 		// verifica colisoes com a bomba
 		for (Iterator<Jogador> it = jogadores.iterator(); it.hasNext();) {
-			
+
 			Jogador j = it.next();
-			
+
 			if (j.getEstado() != Peca.Estado.ACTIVO)
 				continue;
 
@@ -244,10 +243,8 @@ public class Bomberman {
 				j.decVidas();
 				j.setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
 
-				System.out.println(j.getVidas());
-
 				if (j.getVidas() == 0) {
-					j.setEstado(Peca.Estado.INATIVO);	
+					j.setEstado(Peca.Estado.INATIVO);
 					verificaEstadoJogo();
 				}
 			}
@@ -261,8 +258,7 @@ public class Bomberman {
 			PowerUp p = it.next();
 
 			if (j.colide(p)) {
-				System.out.println("pwup");
-				
+
 				if (p.getClass() == SpeedPowerUp.class) {
 					j.updateVelocidade();
 				} else if (p.getClass() == IncRangePowerUp.class) {
@@ -287,7 +283,7 @@ public class Bomberman {
 		for (Iterator<Jogador> it = this.jogadores.iterator(); it.hasNext();) {
 
 			Jogador j = it.next();
-			
+
 			if (j.getEstado() == Peca.Estado.INATIVO)
 				continue;
 
@@ -303,13 +299,10 @@ public class Bomberman {
 
 					if (j.ver(this.bombas.get(k), this.mapa, this.bombas.get(k).getRaio())) {
 
-						System.out.println(j.getEstadoVuln());
-
 						j.decVidas();
 						j.setEstadoVuln(Jogador.EstadoVulnerabilidade.INVULNERAVEL);
 
 						if (j.getVidas() == 0) {
-							System.out.println("morreu");
 							j.setEstado(Peca.Estado.INATIVO);
 							verificaEstadoJogo();
 						}
@@ -363,22 +356,23 @@ public class Bomberman {
 		this.powerUps = powerUps;
 	}
 
-	public void verificaEstadoJogo(){
-		
+	public void verificaEstadoJogo() {
+
 		int counter = 0;
-		
-		for(int i = 0; i < this.jogadores.size(); i++){			
-			if(this.jogadores.get(i).getEstado() == Peca.Estado.ACTIVO)				
-				counter++;							
+
+		for (int i = 0; i < this.jogadores.size(); i++) {
+			if (this.jogadores.get(i).getEstado() == Peca.Estado.ACTIVO)
+				counter++;
 		}
-		
-		//last player alive
-		if(counter == 1){			
-			gameover  = true;
-			
-			System.out.print("Highscore: ");
-			System.out.println( (this.jogadores.size()*100000) / (this.elapsedTime/1000));			
-			
+
+		// last player alive
+		if (counter == 1) {
+			gameover = true;
+
+			// System.out.print("Highscore: ");
+			// System.out.println((this.jogadores.size() * 100000) /
+			// (this.elapsedTime / 1000));
+
 		}
 	}
 
@@ -391,7 +385,20 @@ public class Bomberman {
 	}
 
 	public void updateElapsedTime(int updaterate) {
-		this.elapsedTime+=updaterate;		
+		this.elapsedTime += updaterate;
 	}
 
+	public int isGameover() {
+		if (gameover) {
+			for (int i = 0; i < this.jogadores.size(); i++) {
+				if (this.jogadores.get(i).getEstado() == Peca.Estado.ACTIVO)
+					return this.jogadores.get(i).getId();
+			}
+		}
+		return -1;
+	}
+
+	public int generateHighscore() {
+		return (int) ((this.jogadores.size() * 100000) / (this.elapsedTime / 1000));
+	}
 }
