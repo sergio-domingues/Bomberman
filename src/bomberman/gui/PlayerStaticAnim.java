@@ -9,6 +9,11 @@ import javax.imageio.ImageIO;
 
 import bomberman.logic.Jogador;
 
+/**
+ * Animacao do jogador quando este está no estado PARADO
+ * @author Diogo Moura
+ *
+ */
 public class PlayerStaticAnim implements Animation {
 
 	private int dir;

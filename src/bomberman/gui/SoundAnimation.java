@@ -3,6 +3,11 @@ package bomberman.gui;
 import javafx.scene.media.Media;
 import javafx.scene.media.MediaPlayer;
 
+/**
+ * Classe que gera o som do Jogo
+ * @author Diogo Moura
+ *
+ */
 public class SoundAnimation {
 
 	MediaPlayer player;

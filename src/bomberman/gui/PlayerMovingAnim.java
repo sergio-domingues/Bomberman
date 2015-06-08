@@ -9,6 +9,11 @@ import javax.imageio.ImageIO;
 
 import bomberman.logic.Jogador;
 
+/**
+ * Animacao do Jogador quando este está no Estado MOVER
+ * @author Diogo Moura
+ *
+ */
 public class PlayerMovingAnim implements Animation {
 
 	private int tempo;

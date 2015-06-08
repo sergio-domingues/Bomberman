@@ -9,6 +9,11 @@ import javax.imageio.ImageIO;
 
 import bomberman.logic.Bomba;
 
+/**
+ * Animacao da Explosao da Bomba quando esta está no estado EXPLODINDO
+ * @author Diogo Moura
+ *
+ */
 public class AnimExplosion implements Animation {
 
 	private int tempo;

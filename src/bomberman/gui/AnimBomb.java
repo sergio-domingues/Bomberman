@@ -9,6 +9,11 @@ import javax.imageio.ImageIO;
 
 import bomberman.logic.Bomba;
 
+/**
+ * Animacao da Bomba quando está no Estado ARMADA
+ * @author Diogo Moura
+ *
+ */
 public class AnimBomb implements Animation {
 
 	private int tempo;
