@@ -23,13 +23,14 @@ import javax.swing.JPanel;
 import javax.swing.JSlider;
 import javax.swing.SwingConstants;
 
+import bomberman.connection.Connection;
 import bomberman.logic.Bomberman;
 
 public class Gui {
 
 	public JFrame frame;
 	private JPanel jogo;
-	private int nrPlayers = 1;
+	private int nrPlayers = 2;
 	public int volume = 50;
 	private static Gui instance = null;
 	private SoundAnimation powerupSound = new SoundAnimation(new File(System.getProperty("user.dir") + "\\resources\\default.mp3").toURI().toString());
@@ -83,7 +84,15 @@ public class Gui {
 		frame.repaint();
 	}
 
-	private void initMainMenu() {
+	public void initMainMenu() {
+
+		if (this.jogo != null) {
+			this.frame.getContentPane().remove(this.jogo);
+
+			this.frame.validate();
+			this.frame.repaint();
+		}
+
 		this.jogo = new JPanel();
 
 		this.jogo.setBounds(frame.getBounds());
@@ -96,7 +105,6 @@ public class Gui {
 			logoImage = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\logo.png"));
 			fundo = ImageIO.read(new File(System.getProperty("user.dir") + "\\resources\\background.png"));
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		ImageIcon fundoIcon = new ImageIcon(fundo);
@@ -104,8 +112,6 @@ public class Gui {
 		fundoLabel.setIcon(fundoIcon);
 		fundoLabel.setBounds(50, 100, 500, 500);
 		fundoLabel.setOpaque(true);
-
-		
 
 		ImageIcon logoIcon = new ImageIcon(logoImage);
 		JLabel logo = new JLabel();
@@ -127,7 +133,7 @@ public class Gui {
 		play.setFont(fontLetras);
 		settings.setFont(fontLetras);
 		exit.setFont(fontLetras);
-		
+
 		play.setForeground(Color.RED);
 		settings.setForeground(Color.RED);
 		exit.setForeground(Color.RED);
@@ -188,11 +194,6 @@ public class Gui {
 				players.setPaintLabels(true);
 				players.setLabelTable(players.createStandardLabels(1));
 
-				volumeSlider.setMinorTickSpacing(5);
-				volumeSlider.setPaintTicks(true);
-				volumeSlider.setPaintLabels(true);
-				volumeSlider.setLabelTable(players.createStandardLabels(10));
-
 				settingsDialog.getContentPane().add(new JLabel("Nr Jogadores:", SwingConstants.CENTER));
 				settingsDialog.getContentPane().add(players);
 
@@ -244,6 +245,7 @@ public class Gui {
 		frame.getContentPane().remove(this.jogo);
 
 		this.jogo = new ConnectPlayer(nrPlayers, frame);
+
 		frame.getContentPane().add(this.jogo);
 
 		frame.validate();
@@ -264,5 +266,19 @@ public class Gui {
 
 		this.jogo = new PanelJogo(bm, this.frame);
 		this.frame.getContentPane().add(this.jogo);
+	}
+
+	public void startHighcoreMenu(int idWinner, int score) {
+		this.frame.getContentPane().remove(this.jogo);
+
+		this.powerupSound.stop();
+		Connection.getInstance().stopServer();
+
+		this.frame.validate();
+		this.frame.repaint();
+
+		this.jogo = new HighScorePanel(idWinner, score, this.frame);
+		this.frame.getContentPane().add(this.jogo);
+
 	}
 }

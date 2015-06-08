@@ -10,6 +10,7 @@ import java.io.File;
 import java.io.IOException;
 
 import javax.imageio.ImageIO;
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -35,7 +36,7 @@ public class ConnectPlayer extends JPanel {
 		this.frame = frame;
 		this.frame.setTitle("Connecting Players");
 
-		this.setBounds(frame.getBounds());
+		this.setBounds(0, 0, frame.getBounds().width, frame.getBounds().height);
 
 		Connection.setMaxConnection(nrPlayers);
 		Connection.getInstance();
@@ -53,16 +54,16 @@ public class ConnectPlayer extends JPanel {
 		for (int i = 0; i < nrPlayersMax; i++) {
 			JLabel player = new JLabel();
 			player.setText("Jogador" + (i + 1));
-			player.setBounds(50 + (i % 2) * 400, 150 + (int) (i / 2) * 300, 100, 50);
+			player.setBounds(180 + (i % 2) * 400, 250 + (int) (i / 2) * 300, 100, 50);
 			this.add(player);
 		}
 		tempoLabel = new JLabel();
-		tempoLabel.setBounds(frame.getWidth() / 2 - 150, frame.getHeight() / 2 - 250, 150, 150);
+		tempoLabel.setBounds(frame.getBounds().width / 2 - 50, frame.getBounds().height / 2 - 150, 150, 150);
 		tempoLabel.setFont(new Font("Calibri", Font.BOLD, 150));
 		tempoLabel.setForeground(Color.RED);
 
 		ipLabel = new JLabel("<html>Connect to this IP:<br>" + Connection.getHostIp() + "</html>");
-		ipLabel.setBounds(frame.getWidth() / 2 - 250, frame.getHeight() / 2 - 220, 350, 150);
+		ipLabel.setBounds(frame.getWidth() / 2 - 100, frame.getHeight() / 2 - 120, 350, 150);
 		ipLabel.setFont(new Font("Calibri", Font.BOLD, 25));
 		ipLabel.setForeground(Color.BLUE);
 
@@ -77,15 +78,14 @@ public class ConnectPlayer extends JPanel {
 
 		super.paintComponent(g);
 
-		// TODO ACERTAR FUNCAO
 		int sx1 = (int) (0);
 		int sy1 = (int) (0);
 		int sx2 = (int) (vermelho.getWidth(null) / 4);
 		int sy2 = (int) (vermelho.getHeight(null) / 4);
 
 		for (int i = 0; i < this.nrPlayersMax; i++) {
-			int dx1 = (int) (((int) i % 2) * 400);
-			int dy1 = (int) (((int) i / 2) * 300);
+			int dx1 = (int) (((int) i % 2) * 400 + 130);
+			int dy1 = (int) (((int) i / 2) * 300 + 100);
 			int dx2 = (int) (dx1 + PanelJogo.TILESIZE + 100);
 			int dy2 = (int) (dy1 + PanelJogo.TILESIZE + 100);
 

@@ -16,15 +16,6 @@ public class Jogador extends Peca {
 	};
 
 	private Animation.ColorPlayer color;
-
-	public Animation.ColorPlayer getColor() {
-		return color;
-	}
-
-	public void setColor(Animation.ColorPlayer color) {
-		this.color = color;
-	}
-
 	private Direcao ultimaDirecao;
 	private int nrBombas = 2; // TODO Alterar pra valor desejado
 	private static int nextId = 1;
@@ -62,7 +53,18 @@ public class Jogador extends Peca {
 		animation = new PlayerStaticAnim(color, ultimaDirecao);
 	}
 
-	// =======================================================
+	public Animation.ColorPlayer getColor() {
+		return color;
+	}
+
+	public void setColor(Animation.ColorPlayer color) {
+		this.color = color;
+	}
+
+	public static void resetNextId() {
+		Jogador.nextId = 1;
+	}
+
 	public EstadoVulnerabilidade getEstadoVuln() {
 		return estadoVuln;
 	}
@@ -100,7 +102,6 @@ public class Jogador extends Peca {
 	}
 
 	public void setEstadoJogador(EstadoJogador estadoJogador) {
-		System.out.println("muda");
 		this.estadoJogador = estadoJogador;
 		if (estadoJogador == EstadoJogador.PARADO) {
 			this.animation = new PlayerStaticAnim(color, ultimaDirecao);
@@ -116,7 +117,6 @@ public class Jogador extends Peca {
 		if (this.tempo_invulneravel <= 0) {
 			this.tempo_invulneravel = 1500;
 			this.estadoVuln = EstadoVulnerabilidade.VULNERAVEL;
-			System.out.println("renova tempo");
 		}
 	}
 
